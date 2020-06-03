@@ -36,13 +36,13 @@ def place_obs(nights, space=2):
 
 def generate_ddf(ddf_name, nyears=10):
     previous_ddf = generate_dd_surveys()
-    survey_names = [survey.survey_name for survey in previous_ddf]
-    survey_indx = np.where(survey_names == ddf_name)
-    ddf_ra = previous_ddf[survey_indx].RA * u.rad
+    survey_names = np.array([survey.survey_name for survey in previous_ddf])
+    survey_indx = np.where(survey_names == ddf_name)[0].max()
+    ddf_ra = previous_ddf[survey_indx].ra * u.rad
     ddf_dec = previous_ddf[survey_indx].dec* u.rad
 
     site = Site('LSST')
-    location = EarthLocation(lat=site.latitude, lon=site.longitude,height=site.height)
+    location = EarthLocation(lat=site.latitude, lon=site.longitude, height=site.height)
 
     mjd = np.arange(59853.5, 59853.5+365.25*nyears, 20./60/24.)
     times = Time(mjd, format='mjd', location=location)
@@ -54,7 +54,7 @@ def generate_ddf(ddf_name, nyears=10):
     g_m5_limit = 23.5  # mags
 
     season_gap = 20.  # days. Count any gap longer than this as it's own season
-    season_length_limit = 100  # Days. Demand at least this many days in a season
+    season_length_limit = 80  # Days. Demand at least this many days in a season
 
     # How long to keep attempting a DDF
     expire_dict = {1: 36./24., 2: 0.5}
@@ -104,7 +104,6 @@ def generate_ddf(ddf_name, nyears=10):
     # I think this should pluck out the g-filter. Really should be labled
     ddf_approx_fwhmEff = ddf_approx_fwhmEff['fwhmEff'][1].ravel()
 
-
     ddf_m5 = m5_flat_sed('g', g_sb, ddf_approx_fwhmEff, 30., ddf_airmass, nexp=1.)
 
     # demand sun down past twilight, ddf is up, and observatory is open, and not too close to the moon
@@ -147,5 +146,14 @@ def generate_ddf(ddf_name, nyears=10):
         mjd_observe.append((mjd_start, mjd_end))
 
 
-    return mjd_observe, ddf_ra, ddf_dec
+    return mjd_observe, ddf_ra, ddf_dec, previous_ddf[survey_indx].observations
 
+
+if __name__ =="__main__":
+    ddf_names = ['DD:ELAISS1', 'DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS', 'DD:EDFS']
+
+    results = []
+    for ddf_name in ddf_names:
+        print('generating %s' % ddf_name)
+        results.append(generate_ddf(ddf_name, nyears=2.2))
+    import pdb ; pdb.set_trace()
