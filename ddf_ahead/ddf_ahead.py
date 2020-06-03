@@ -352,10 +352,10 @@ if __name__ == "__main__":
     # Set up the DDF surveys to dither
     dither_detailer = detailers.Dither_detailer(per_night=per_night, max_dither=max_dither)
     details = [detailers.Camera_rot_detailer(min_rot=-camera_ddf_rot_limit, max_rot=camera_ddf_rot_limit), dither_detailer]
-    ddf_dict = ddf_info()
+    ddf_dict, ha_dict = ddf_info()
     ddf_times = read_times()
 
-    ddfs = [Scheduled_ddfs(ddf_times, ddf_dict, detailers=details)]
+    ddfs = [Scheduled_ddfs(ddf_times, ddf_dict, ha_dict, detailers=details)]
 
     greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints)
     blobs = generate_blobs(nside, nexp=nexp, footprints=footprints)

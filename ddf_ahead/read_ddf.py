@@ -31,26 +31,37 @@ def ddf_info(exptime=30., u_exptime=30., nexp=1):
     Basic info for each DDF
     """
     ddf_dict = {}
+    ha_limits_dict = {}
 
     # ELAIS S1
     RA = 9.45
     dec = -44.
-    ddf_dict['DD:ELAISS1'] = basic_sequence(RA, dec, 'DD:ELAISS1')
+    ddf_dict['DD:ELAISS1'] = basic_sequence(RA, dec, 'DD:ELAISS1',
+                                            exptime=exptime,
+                                            u_exptime=u_exptime, nexp=nexp)
+    ha_limits_dict['DD:ELAISS1'] = ([0., 1.5], [21.5, 24.])
 
     # XMM-LSS
     RA = 35.708333
     dec = -4-45/60.
-    ddf_dict['DD:XMM-LSS'] = basic_sequence(RA, dec, 'DD:XMM-LSS')
+    ddf_dict['DD:XMM-LSS'] = basic_sequence(RA, dec, 'DD:XMM-LSS',
+                                            exptime=exptime,
+                                            u_exptime=u_exptime, nexp=nexp)
+    ha_limits_dict['DD:XMM-LSS'] = ([0., 1.5], [21.5, 24.])
 
     # Extended Chandra Deep Field South
     RA = 53.125
     dec = -28.-6/60.
-    ddf_dict['DD:ECDFS'] = basic_sequence(RA, dec, 'DD:ECDFS')
+    ddf_dict['DD:ECDFS'] = basic_sequence(RA, dec, 'DD:ECDFS',
+                                          exptime=exptime,
+                                          u_exptime=u_exptime, nexp=nexp)
+    ha_limits_dict['DD:ECDFS'] = ([0.5, 3.0], [20., 22.5])
 
     # COSMOS
     RA = 150.1
     dec = 2.+10./60.+55/3600.
-    ddf_dict['DD:COSMOS'] = basic_sequence(RA, dec, 'DD:COSMOS')
+    ddf_dict['DD:COSMOS'] = basic_sequence(RA, dec, 'DD:COSMOS', exptime=exptime, u_exptime=u_exptime, nexp=nexp)
+    ha_limits_dict['DD:COSMOS'] = ([0., 2.5], [21.5, 24.])
 
     # Euclid Fields
     # I can use the sequence kwarg to do two positions per sequence
@@ -77,8 +88,9 @@ def ddf_info(exptime=30., u_exptime=30., nexp=1):
                 obs['note'] = survey_name
                 sequence.append(obs)
     ddf_dict[survey_name] = np.array(sequence)
+    ha_limits_dict[survey_name] = ([0., 1.5], [22.5, 24.])
 
-    return ddf_dict
+    return ddf_dict, ha_limits_dict
 
 
 def read_times(filename='schedule_59002.txt', end_time=36.):
@@ -87,7 +99,7 @@ def read_times(filename='schedule_59002.txt', end_time=36.):
     types = [float, '|U10']
     data = np.genfromtxt(filename, dtype=list(zip(names, types)), skip_header=1)
 
-    info = ddf_info()
+    info, ha_dict = ddf_info()
     ddf_names = list(info.keys())
     # convert the names
     orig_names = np.unique(data['label'])
@@ -113,8 +125,8 @@ def read_times(filename='schedule_59002.txt', end_time=36.):
 
 
 class Scheduled_ddfs(BaseSurvey):
-    def __init__(self, times_array, sequence_dict, basis_functions=[],
-                 detailers=[], ignore_obs=None, reward_value=100, flush_time=40., alt_limit=30.):
+    def __init__(self, times_array, sequence_dict, ha_dict, basis_functions=[],
+                 detailers=[], ignore_obs=None, reward_value=100, flush_time=40.):
 
         super(Scheduled_ddfs, self).__init__(basis_functions=basis_functions,
                                              detailers=detailers, ignore_obs=ignore_obs)
@@ -122,9 +134,9 @@ class Scheduled_ddfs(BaseSurvey):
         self.times_array = times_array
         self.sequence_dict = sequence_dict
         self.flush_time = flush_time/60./24.
-        self.alt_limit = np.radians(alt_limit)
         self.observation_complete = np.zeros(self.times_array.size, dtype=bool)
         self.reward_value = reward_value
+        self.ha_dict = ha_dict
 
     def _check_feasibility(self, conditions):
         result = False
@@ -137,11 +149,14 @@ class Scheduled_ddfs(BaseSurvey):
         if np.size(in_mjd) > 0:
             indx = np.min(in_mjd)
             ra = self.sequence_dict[self.times_array[indx]['label']]['RA'][0]
-            dec = self.sequence_dict[self.times_array[indx]['label']]['dec'][0]
-            alt, az = _approx_RaDec2AltAz(ra, dec,
-                                          conditions.site.latitude_rad,
-                                          conditions.site.longitude_rad, conditions.mjd)
-            if alt > self.alt_limit:
+            # HA
+            target_HA = (conditions.lmst - ra*12/np.pi) % 24
+            in_HA_range = False
+            for ha_range in self.ha_dict[self.times_array[indx]['label']]:
+                lres = np.min(ha_range) <= target_HA < np.max(ha_range)
+                in_HA_range = in_HA_range | lres
+
+            if in_HA_range:
                 result = True
                 self.observations = copy.deepcopy(self.sequence_dict[self.times_array[indx]['label']])
                 self.indx = indx
