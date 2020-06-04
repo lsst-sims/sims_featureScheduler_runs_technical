@@ -138,15 +138,17 @@ def generate_ddf(ddf_name, nyears=10):
     obs_attempts = np.concatenate(obs_attempts)
 
     mjd_observe = []
+    m5_approx = []
     for indx in np.where(obs_attempts > 0)[0]:
         in_night_indx = np.where(night == potential_nights[indx])[0]
-        best_depth_indx = np.where(ddf_m5[in_night_indx] == np.nanmin(ddf_m5[in_night_indx]))[0]
-        mjd_start = mjd[in_night_indx[best_depth_indx]].max()
+        best_depth_indx = np.min(np.where(ddf_m5[in_night_indx] == np.nanmax(ddf_m5[in_night_indx]))[0])
+        mjd_start = mjd[in_night_indx[best_depth_indx]]
+        m5_approx.append(ddf_m5[in_night_indx[best_depth_indx]])
         mjd_end = mjd_start + expire_dict[obs_attempts[indx]]
         mjd_observe.append((mjd_start, mjd_end))
 
 
-    return mjd_observe, ddf_ra, ddf_dec, previous_ddf[survey_indx].observations
+    return mjd_observe, ddf_ra, ddf_dec, previous_ddf[survey_indx].observations, m5_approx
 
 
 if __name__ =="__main__":
