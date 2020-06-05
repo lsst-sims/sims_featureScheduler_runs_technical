@@ -141,13 +141,11 @@ class Scheduled_ddfs(BaseSurvey):
     def _check_feasibility(self, conditions):
         result = False
         # Check if there is a sequence that wants to go
-
         # XXX--can probably use searchsorted here for faster results
         in_mjd = np.where((conditions.mjd > self.times_array['mjd_start']) &
                           (conditions.mjd < self.times_array['mjd_end']) &
                           (self.observation_complete == False))[0]
-        if np.size(in_mjd) > 0:
-            indx = np.min(in_mjd)
+        for indx in in_mjd:
             ra = self.sequence_dict[self.times_array[indx]['label']]['RA'][0]
             # HA
             target_HA = (conditions.lmst - ra*12/np.pi) % 24
@@ -160,6 +158,7 @@ class Scheduled_ddfs(BaseSurvey):
                 result = True
                 self.observations = copy.deepcopy(self.sequence_dict[self.times_array[indx]['label']])
                 self.indx = indx
+                return result
 
         return result
 
