@@ -313,6 +313,7 @@ if __name__ == "__main__":
     parser.add_argument("--nexp", type=int, default=1)
     parser.add_argument("--scale_down", dest='scale_down', action='store_true')
     parser.set_defaults(scale_down=False)
+    parser.add_argument("--float_time", type=float, default=36.)
 
     args = parser.parse_args()
     survey_length = args.survey_length  # Days
@@ -322,6 +323,7 @@ if __name__ == "__main__":
     illum_limit = args.moon_illum_limit
     nexp = args.nexp
     scale_down = args.scale_down
+    float_time = args.float_time
 
     nside = 32
     per_night = True  # Dither DDF per night
@@ -340,7 +342,7 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'ddf_ahead_'
+    fileroot = 'ddf_ahead_%i_' % float_time
     file_end = 'v1.6_'
 
     if scale_down:
@@ -353,7 +355,7 @@ if __name__ == "__main__":
     dither_detailer = detailers.Dither_detailer(per_night=per_night, max_dither=max_dither)
     details = [detailers.Camera_rot_detailer(min_rot=-camera_ddf_rot_limit, max_rot=camera_ddf_rot_limit), dither_detailer]
     ddf_dict, ha_dict = ddf_info()
-    ddf_times = read_times()
+    ddf_times = read_times(end_time=float_time)
 
     ddfs = [Scheduled_ddfs(ddf_times, ddf_dict, ha_dict, detailers=details)]
 

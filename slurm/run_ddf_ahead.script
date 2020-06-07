@@ -1,0 +1,4 @@
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/ddf_ahead/ddf_ahead.py --float_time 12 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/ddf_ahead
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/ddf_ahead/ddf_ahead.py --float_time 36 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/ddf_ahead
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/ddf_ahead/ddf_ahead.py --float_time 168 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/ddf_ahead
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/ddf_ahead/ddf_ahead.py --float_time 4320 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/ddf_ahead
