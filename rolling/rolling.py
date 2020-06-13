@@ -18,7 +18,7 @@ import argparse
 def gen_greedy_surveys(nside=32, nexp=1, exptime=30., filters=['r', 'i', 'z', 'y'],
                        camera_rot_limits=[-80., 80.],
                        shadow_minutes=60., max_alt=76., moon_distance=30., ignore_obs='DD',
-                       m5_weight=6., footprint_weight=0.6, slewtime_weight=3.,
+                       m5_weight=3., footprint_weight=0.3, slewtime_weight=3.,
                        stayfilter_weight=3.,
                        footprints=None, season_modulo=None, day_offset=None,
                        all_footprints_sum=None, all_rolling_sum=None, max_season=None):
@@ -102,7 +102,7 @@ def generate_blobs(nside, nexp=1, exptime=30., filter1s=['u', 'u', 'g', 'r', 'i'
                    camera_rot_limits=[-80., 80.], n_obs_template=3,
                    season=300., season_start_hour=-4., season_end_hour=2.,
                    shadow_minutes=60., max_alt=76., moon_distance=30., ignore_obs='DD',
-                   m5_weight=6., footprint_weight=0.6, slewtime_weight=3.,
+                   m5_weight=3., footprint_weight=0.3, slewtime_weight=3.,
                    stayfilter_weight=3., template_weight=12.,
                    footprints=None,
                    season_modulo=None, day_offset=None,
