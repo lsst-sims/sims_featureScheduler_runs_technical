@@ -1,0 +1,1 @@
+A quick run checking how we do with pairs in the same filter in a v1.5 like way.
