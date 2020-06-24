@@ -332,15 +332,19 @@ if __name__ == "__main__":
         footprints = nes_light_footprints(nside=nside)
         fileroot = fileroot +'scaleddown_'
     else:
-
         footprints_arrays = standard_goals(nside=nside)
+
+    # Could update this to avoid area around the Ecliptic
+    wfd_indx = np.where(footprints_arrays['r'] == 1)[0]
 
     observatory = Model_observatory(nside=nside)
     conditions = observatory.return_conditions()
 
     footprints = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside)
+    footprints_greedy = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside)
     for key in footprints_arrays:
         footprints.footprints[key] = footprints_arrays[key]
+        footprints_greedy.footprints[key][wfd_indx] = footprints_arrays[key][wfd_indx]
 
     # Set up the DDF surveys to dither
     dither_detailer = detailers.Dither_detailer(per_night=per_night, max_dither=max_dither)
