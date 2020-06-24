@@ -188,18 +188,18 @@ def generate_blobs(nside, nexp=1, exptime=30., filter1s=['u', 'u', 'g', 'r', 'i'
 
         if filtername2 is not None:
             bfs.append((bf.N_obs_per_year_basis_function(filtername=filtername, nside=nside,
-                                                         footprint=footprints.footprints[filtername],
+                                                         footprint=footprints.get_footprint(filtername),
                                                          n_obs=n_obs_template, season=season,
                                                          season_start_hour=season_start_hour,
                                                          season_end_hour=season_end_hour), template_weight/2.))
             bfs.append((bf.N_obs_per_year_basis_function(filtername=filtername2, nside=nside,
-                                                         footprint=footprints.footprints[filtername2],
+                                                         footprint=footprints.get_footprint(filtername2),
                                                          n_obs=n_obs_template, season=season,
                                                          season_start_hour=season_start_hour,
                                                          season_end_hour=season_end_hour), template_weight/2.))
         else:
             bfs.append((bf.N_obs_per_year_basis_function(filtername=filtername, nside=nside,
-                                                         footprint=footprints.footprints[filtername],
+                                                         footprint=footprints.get_footprint(filtername),
                                                          n_obs=n_obs_template, season=season,
                                                          season_start_hour=season_start_hour,
                                                          season_end_hour=season_end_hour), template_weight))
@@ -342,16 +342,16 @@ if __name__ == "__main__":
 
     footprints = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside)
     footprints_greedy = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside)
-    for key in footprints_arrays:
-        footprints.footprints[key] = footprints_arrays[key]
-        footprints_greedy.footprints[key][wfd_indx] = footprints_arrays[key][wfd_indx]
+    for i, key in enumerate(footprints_arrays):
+        footprints.footprints[i, :] = footprints_arrays[key]
+        footprints_greedy.footprints[i, :][wfd_indx] = footprints_arrays[key][wfd_indx]
 
     # Set up the DDF surveys to dither
     dither_detailer = detailers.Dither_detailer(per_night=per_night, max_dither=max_dither)
     details = [detailers.Camera_rot_detailer(min_rot=-camera_ddf_rot_limit, max_rot=camera_ddf_rot_limit), dither_detailer]
     ddfs = generate_dd_surveys(nside=nside, nexp=nexp, detailers=details)
 
-    greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints)
+    greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints_greedy)
     blobs = generate_blobs(nside, nexp=nexp, footprints=footprints)
     surveys = [ddfs, blobs, greedy]
     run_sched(surveys, survey_length=survey_length, verbose=verbose,
