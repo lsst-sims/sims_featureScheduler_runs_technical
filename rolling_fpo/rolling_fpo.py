@@ -3,7 +3,9 @@ import matplotlib.pylab as plt
 import healpy as hp
 from lsst.sims.featureScheduler.modelObservatory import Model_observatory
 from lsst.sims.featureScheduler.schedulers import Core_scheduler, simple_filter_sched
-from lsst.sims.featureScheduler.utils import standard_goals, create_season_offset, generate_goal_map, Footprint
+from lsst.sims.featureScheduler.utils import (standard_goals, create_season_offset,
+                                              generate_goal_map, Footprint, Footprints,
+                                              step_slopes)
 import lsst.sims.featureScheduler.basis_functions as bf
 from lsst.sims.featureScheduler.surveys import (Greedy_survey, generate_dd_surveys,
                                                 Blob_survey)
@@ -286,6 +288,47 @@ def run_sched(surveys, survey_length=365.25, nside=32, fileroot='baseline_', ver
                                                       filter_scheduler=filter_sched)
 
 
+def make_rolling_footprints(mjd_start=59853.5, sun_RA_start=3.27717639, nslice=2):
+    hp_footprints = standard_goals()
+
+    slopes_on = [0., 1., 1.8, 0.2, 1.8, 0.2, 1.8, 0.2, 1.8, 0.2, 1., 1.]
+    slopes_off = [0., 1., 0.2, 1.8, 0.2, 1.8, 0.2, 1.8, 0.2, 1.8, 1., 1.]
+
+    all_slopes = [slopes_on, slopes_off]
+
+    fp_non_wfd = Footprint(mjd_start, sun_RA_start=sun_RA_start)
+    rolling_footprints = []
+    for i in range(nslice):
+        rolling_footprints.append(Footprint(mjd_start, sun_RA_start=sun_RA_start,
+                                            step_size=all_slopes[i], step_func=step_slopes))
+
+    wfd_indx = np.where(hp_footprints['r'] == 1)[0]
+    non_wfd_indx = np.where(hp_footprints['r'] != 1)[0]
+
+    wfd = hp_footprints['r'] * 0
+    wfd[wfd_indx] = 1
+    wfd_accum = np.cumsum(wfd)
+    split_wfd_indices = np.floor(np.max(wfd_accum)/nslice*(np.arange(nslice)+1)).astype(int)
+    split_wfd_indices = split_wfd_indices.tolist()
+    split_wfd_indices = [0] + split_wfd_indices
+
+    for key in hp_footprints:
+        temp = hp_footprints[key] + 0
+        temp[wfd_indx] = 0
+        fp_non_wfd.set_footprint(key, temp)
+
+        for i, spi in enumerate(split_wfd_indices[0:-1]):
+            temp = hp_footprints[key] + 0
+            temp[non_wfd_indx] = 0
+            indx = wfd_indx[split_wfd_indices[i]:split_wfd_indices[i+1]]
+            temp[indx] = 0
+            rolling_footprints[i].set_footprint(key, temp)
+
+    result = Footprints([fp_non_wfd] + rolling_footprints)
+    return result
+
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -325,7 +368,7 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'fp_'
+    fileroot = 'rolling_fpo_'
     file_end = 'v1.6_'
 
     if scale_down:
@@ -340,18 +383,21 @@ if __name__ == "__main__":
     observatory = Model_observatory(nside=nside)
     conditions = observatory.return_conditions()
 
-    footprints = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside)
-    footprints_greedy = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside)
-    for i, key in enumerate(footprints_arrays):
-        footprints.footprints[i, :] = footprints_arrays[key]
-        footprints_greedy.footprints[i, :][wfd_indx] = footprints_arrays[key][wfd_indx]
+    #footprints = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside)
+    #footprints_greedy = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside)
+    #for i, key in enumerate(footprints_arrays):
+    #    footprints.footprints[i, :] = footprints_arrays[key]
+    #    footprints_greedy.footprints[i, :][wfd_indx] = footprints_arrays[key][wfd_indx]
+    footprints = make_rolling_footprints()
+
+    # XXX--to do, make the greedy footprints avoid the ecliptic
 
     # Set up the DDF surveys to dither
     dither_detailer = detailers.Dither_detailer(per_night=per_night, max_dither=max_dither)
     details = [detailers.Camera_rot_detailer(min_rot=-camera_ddf_rot_limit, max_rot=camera_ddf_rot_limit), dither_detailer]
     ddfs = generate_dd_surveys(nside=nside, nexp=nexp, detailers=details)
 
-    greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints_greedy)
+    greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints)
     blobs = generate_blobs(nside, nexp=nexp, footprints=footprints)
     surveys = [ddfs, blobs, greedy]
     run_sched(surveys, survey_length=survey_length, verbose=verbose,
