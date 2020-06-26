@@ -291,8 +291,8 @@ def run_sched(surveys, survey_length=365.25, nside=32, fileroot='baseline_', ver
 def make_rolling_footprints(mjd_start=59853.5, sun_RA_start=3.27717639, nslice=2):
     hp_footprints = standard_goals()
 
-    slopes_on = [0., 1., 1.8, 0.2, 1.8, 0.2, 1.8, 0.2, 1.8, 0.2, 1., 1.]
-    slopes_off = [0., 1., 0.2, 1.8, 0.2, 1.8, 0.2, 1.8, 0.2, 1.8, 1., 1.]
+    slopes_on = [0., 1., 1.8, 0.2, 1.8, 0.2, 1.8, 0.2, 1.8, 0.2, 1., 1., 1.]
+    slopes_off = [0., 1., 0.2, 1.8, 0.2, 1.8, 0.2, 1.8, 0.2, 1.8, 1., 1., 1.]
 
     all_slopes = [slopes_on, slopes_off]
 
