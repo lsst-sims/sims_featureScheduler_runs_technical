@@ -5,7 +5,7 @@ from lsst.sims.featureScheduler.modelObservatory import Model_observatory
 from lsst.sims.featureScheduler.schedulers import Core_scheduler, simple_filter_sched
 from lsst.sims.featureScheduler.utils import (standard_goals, create_season_offset,
                                               generate_goal_map, Footprint, Footprints,
-                                              step_slopes)
+                                              Step_slopes)
 import lsst.sims.featureScheduler.basis_functions as bf
 from lsst.sims.featureScheduler.surveys import (Greedy_survey, generate_dd_surveys,
                                                 Blob_survey)
@@ -288,19 +288,27 @@ def run_sched(surveys, survey_length=365.25, nside=32, fileroot='baseline_', ver
                                                       filter_scheduler=filter_sched)
 
 
-def make_rolling_footprints(mjd_start=59853.5, sun_RA_start=3.27717639, nslice=2):
+def make_rolling_footprints(mjd_start=59853.5, sun_RA_start=3.27717639, nslice=2, scale=0.8):
     hp_footprints = standard_goals()
 
-    slopes_on = [0., 1., 1.8, 0.2, 1.8, 0.2, 1.8, 0.2, 1.8, 0.2, 1., 1., 1.]
-    slopes_off = [0., 1., 0.2, 1.8, 0.2, 1.8, 0.2, 1.8, 0.2, 1.8, 1., 1., 1.]
-
-    all_slopes = [slopes_on, slopes_off]
+    down = 1.-scale
+    up = nslice - down*(nslice-1)
+    start = [0., 1.]
+    end = [1., 1., 1.]
+    if nslice == 2:
+        rolling = [up, down, up, down, up, down]
+    elif nslice == 3:
+        rolling = [up, down, down, up, down, down]
+    elif nslice == 6:
+        rolling = [up, down, down, down, down, down]
+    all_slopes = [start + np.roll(rolling, i).tolist()+end for i in range(nslice)]
 
     fp_non_wfd = Footprint(mjd_start, sun_RA_start=sun_RA_start)
     rolling_footprints = []
     for i in range(nslice):
+        step_func = Step_slopes(rise=all_slopes[i])
         rolling_footprints.append(Footprint(mjd_start, sun_RA_start=sun_RA_start,
-                                            step_size=all_slopes[i], step_func=step_slopes))
+                                            step_func=step_func))
 
     wfd_indx = np.where(hp_footprints['r'] == 1)[0]
     non_wfd_indx = np.where(hp_footprints['r'] != 1)[0]
@@ -328,7 +336,6 @@ def make_rolling_footprints(mjd_start=59853.5, sun_RA_start=3.27717639, nslice=2
     return result
 
 
-
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -340,6 +347,8 @@ if __name__ == "__main__":
     parser.add_argument("--moon_illum_limit", type=float, default=40., help="illumination limit to remove u-band")
     parser.add_argument("--nexp", type=int, default=1)
     parser.add_argument("--scale_down", dest='scale_down', action='store_true')
+    parser.add_argument("--nslice", type=int, default=2)
+    parser.add_argument("--scale", type=float, default=0.8)
     parser.set_defaults(scale_down=False)
 
     args = parser.parse_args()
@@ -350,6 +359,8 @@ if __name__ == "__main__":
     illum_limit = args.moon_illum_limit
     nexp = args.nexp
     scale_down = args.scale_down
+    nslice = args.nslice
+    scale = args.scale
 
     nside = 32
     per_night = True  # Dither DDF per night
@@ -368,7 +379,7 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'rolling_fpo_'
+    fileroot = 'rolling_fpo_%inslice%0.1f_' % (nslice,scale)
     file_end = 'v1.6_'
 
     if scale_down:
@@ -383,12 +394,7 @@ if __name__ == "__main__":
     observatory = Model_observatory(nside=nside)
     conditions = observatory.return_conditions()
 
-    #footprints = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside)
-    #footprints_greedy = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside)
-    #for i, key in enumerate(footprints_arrays):
-    #    footprints.footprints[i, :] = footprints_arrays[key]
-    #    footprints_greedy.footprints[i, :][wfd_indx] = footprints_arrays[key][wfd_indx]
-    footprints = make_rolling_footprints()
+    footprints = make_rolling_footprints(nslice=nslice, scale=scale)
 
     # XXX--to do, make the greedy footprints avoid the ecliptic
 
