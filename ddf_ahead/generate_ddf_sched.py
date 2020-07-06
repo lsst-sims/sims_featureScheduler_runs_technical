@@ -34,7 +34,7 @@ def place_obs(nights, space=2):
             last_obs_indx = i
     return result
 
-def generate_ddf(ddf_name, nyears=10):
+def generate_ddf(ddf_name, nyears=10, space=2):
     previous_ddf = generate_dd_surveys()
     survey_names = np.array([survey.survey_name for survey in previous_ddf])
     survey_indx = np.where(survey_names == ddf_name)[0].max()
@@ -134,7 +134,7 @@ def generate_ddf(ddf_name, nyears=10):
     obs_attempts = []
     for sea in np.unique(season):
         night_indx = np.where(season == sea)
-        obs_attempts.append(place_obs(potential_nights[night_indx]))
+        obs_attempts.append(place_obs(potential_nights[night_indx], space=space))
     obs_attempts = np.concatenate(obs_attempts)
 
     mjd_observe = []
@@ -148,14 +148,23 @@ def generate_ddf(ddf_name, nyears=10):
         mjd_observe.append((mjd_start, mjd_end))
 
 
-    return mjd_observe, ddf_ra, ddf_dec, previous_ddf[survey_indx].observations, m5_approx
+    return mjd_observe, ddf_ra, ddf_dec #, previous_ddf[survey_indx].observations, m5_approx
 
 
 if __name__ =="__main__":
-    ddf_names = ['DD:ELAISS1', 'DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS', 'DD:EDFS']
+    #ddf_names = ['DD:ELAISS1', 'DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS', 'DD:EDFS']
+    ddf_names = ['DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS', 'DD:EDFS']
 
     results = []
     for ddf_name in ddf_names:
         print('generating %s' % ddf_name)
-        results.append(generate_ddf(ddf_name, nyears=2.2))
-    import pdb ; pdb.set_trace()
+        results.append(generate_ddf(ddf_name, nyears=10))
+
+
+    ddf_names = ['DD:ELAISS1']
+    for ddf_name in ddf_names:
+        print('generating %s' % ddf_name)
+        results.append(generate_ddf(ddf_name, nyears=1.0, space=0.8))
+
+    np.savez(results, 'test_sched.npz')
+    
