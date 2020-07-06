@@ -25,6 +25,7 @@ def place_obs(nights, space=2):
     result[after_gap] = 1
     pre_gap = after_gap[1:]-1
     result[pre_gap] = 2
+    last_obs_indx = 0
 
     for i, night in enumerate(nights):
         if result[i] > 0:
@@ -160,6 +161,7 @@ if __name__ =="__main__":
         print('generating %s' % ddf_name)
         results.append(generate_ddf(ddf_name, nyears=10))
 
+    np.savez(results, 'test_sched.npz')
 
     ddf_names = ['DD:ELAISS1']
     for ddf_name in ddf_names:
