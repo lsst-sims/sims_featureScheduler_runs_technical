@@ -161,12 +161,12 @@ if __name__ =="__main__":
         print('generating %s' % ddf_name)
         results.append(generate_ddf(ddf_name, nyears=10))
 
-    np.savez(results, 'test_sched.npz')
+    np.savez('test_sched.npz', results=results)
 
     ddf_names = ['DD:ELAISS1']
     for ddf_name in ddf_names:
         print('generating %s' % ddf_name)
         results.append(generate_ddf(ddf_name, nyears=1.0, space=0.8))
 
-    np.savez(results, 'test_sched.npz')
+    np.savez('test_sched.npz', results=results)
     
