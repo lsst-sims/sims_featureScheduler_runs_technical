@@ -324,7 +324,7 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'ddf_ahead_roll1_'
+    fileroot = 'ddf_ahead_noroll1_'
     file_end = 'v1.6_'
 
     if scale_down:
@@ -343,7 +343,7 @@ if __name__ == "__main__":
     dither_detailer = detailers.Dither_detailer(per_night=per_night, max_dither=max_dither)
     details = [detailers.Camera_rot_detailer(min_rot=-camera_ddf_rot_limit, max_rot=camera_ddf_rot_limit), dither_detailer]
     ddf_dict, ha_dict = ddf_info()
-    temp = np.load('test_sched.npz')
+    temp = np.load('test_sched_noroll.npz')
     ddf_times = temp['results'].copy()
     temp.close()
     #ddf_times = read_times(filename=ddf_file, end_time=float_time)
