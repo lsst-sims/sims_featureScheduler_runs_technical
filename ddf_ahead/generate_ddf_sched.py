@@ -148,7 +148,6 @@ def generate_ddf(ddf_name, nyears=10, space=2):
         mjd_end = mjd_start + expire_dict[obs_attempts[indx]]
         mjd_observe.append((mjd_start, mjd_end))
 
-
     result = np.zeros(len(mjd_observe), dtype=[('mjd_start', '<f8'),
                       ('mjd_end', '<f8'), ('label', '<U10')])
     mjd_observe = np.array(mjd_observe)
@@ -161,23 +160,28 @@ def generate_ddf(ddf_name, nyears=10, space=2):
 
 if __name__ =="__main__":
 
-    # ddf_names = ['DD:ELAISS1', 'DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS', 'DD:EDFS']
-    ddf_names = ['DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS', 'DD:EDFS']
+    roll = False
+    if roll:
+        ddf_names = ['DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS', 'DD:EDFS']
+        filename = 'test_sched.npz'
+    else:
+        ddf_names = ['DD:ELAISS1', 'DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS', 'DD:EDFS']
+        filename = 'test_sched_noroll.npz'
 
     results = []
     for ddf_name in ddf_names:
         print('generating %s' % ddf_name)
         mjd = generate_ddf(ddf_name, nyears=10.0)
         results.append(mjd)
-        
 
-    ddf_names = ['DD:ELAISS1']
-    for ddf_name in ddf_names:
-        print('generating %s' % ddf_name)
-        mjd = generate_ddf(ddf_name, nyears=1.0, space=0.8)
-        results.append((mjd, ddf_name))
-    
+    if roll:
+        ddf_names = ['DD:ELAISS1']
+        for ddf_name in ddf_names:
+            print('generating %s' % ddf_name)
+            mjd = generate_ddf(ddf_name, nyears=1.0, space=0.8)
+            results.append((mjd, ddf_name))
+
     final = np.concatenate(results)
 
-    np.savez('test_sched.npz', results=final)
-    
+    np.savez(filename, results=final)
+

@@ -357,7 +357,10 @@ if __name__ == "__main__":
     dither_detailer = detailers.Dither_detailer(per_night=per_night, max_dither=max_dither)
     details = [detailers.Camera_rot_detailer(min_rot=-camera_ddf_rot_limit, max_rot=camera_ddf_rot_limit), dither_detailer]
     ddf_dict, ha_dict = ddf_info()
-    ddf_times = read_times(filename=ddf_file, end_time=float_time)
+    temp = np.load('test_sched.npz')
+    ddf_times = temp['results'].copy()
+    temp.close()
+    #ddf_times = read_times(filename=ddf_file, end_time=float_time)
 
     import pdb ; pdb.set_trace()
 
