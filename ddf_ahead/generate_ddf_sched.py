@@ -179,7 +179,7 @@ if __name__ =="__main__":
         for ddf_name in ddf_names:
             print('generating %s' % ddf_name)
             mjd = generate_ddf(ddf_name, nyears=1.0, space=0.8)
-            results.append((mjd, ddf_name))
+            results.append(mjd)
 
     final = np.concatenate(results)
 
