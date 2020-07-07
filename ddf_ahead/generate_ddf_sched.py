@@ -149,24 +149,35 @@ def generate_ddf(ddf_name, nyears=10, space=2):
         mjd_observe.append((mjd_start, mjd_end))
 
 
-    return mjd_observe, ddf_ra, ddf_dec #, previous_ddf[survey_indx].observations, m5_approx
+    result = np.zeros(len(mjd_observe), dtype=[('mjd_start', '<f8'),
+                      ('mjd_end', '<f8'), ('label', '<U10')])
+    mjd_observe = np.array(mjd_observe)
+    result['mjd_start'] = mjd_observe[:, 0]
+    result['mjd_end'] = mjd_observe[:, 1]
+    result['label'] = ddf_name
+
+    return result #, ddf_ra, ddf_dec #, previous_ddf[survey_indx].observations, m5_approx
 
 
 if __name__ =="__main__":
-    #ddf_names = ['DD:ELAISS1', 'DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS', 'DD:EDFS']
+
+    # ddf_names = ['DD:ELAISS1', 'DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS', 'DD:EDFS']
     ddf_names = ['DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS', 'DD:EDFS']
 
     results = []
     for ddf_name in ddf_names:
         print('generating %s' % ddf_name)
-        results.append(generate_ddf(ddf_name, nyears=10))
-
-    np.savez('test_sched.npz', results=results)
+        mjd = generate_ddf(ddf_name, nyears=10.0)
+        results.append(mjd)
+        
 
     ddf_names = ['DD:ELAISS1']
     for ddf_name in ddf_names:
         print('generating %s' % ddf_name)
-        results.append(generate_ddf(ddf_name, nyears=1.0, space=0.8))
+        mjd = generate_ddf(ddf_name, nyears=1.0, space=0.8)
+        results.append((mjd, ddf_name))
+    
+    final = np.concatenate(results)
 
-    np.savez('test_sched.npz', results=results)
+    np.savez('test_sched.npz', results=final)
     
