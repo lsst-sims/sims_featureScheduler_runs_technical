@@ -1,0 +1,5 @@
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/weather/vary_weather.py --cloud_limit 0.3 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/weather
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/weather/vary_weather.py --cloud_limit 0.5 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/weather
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/weather/vary_weather.py --cloud_limit 0.7 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/weather
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/weather/vary_weather.py --cloud_limit 0.9 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/weather
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/weather/vary_weather.py --cloud_limit 1.1 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/weather

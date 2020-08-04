@@ -160,7 +160,7 @@ def generate_ddf(ddf_name, nyears=10, space=2):
 
 if __name__ =="__main__":
 
-    roll = False
+    roll = True #False
     if roll:
         ddf_names = ['DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS', 'DD:EDFS']
         filename = 'test_sched.npz'
