@@ -325,7 +325,7 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'baseline_nexp%i_' % nexp
+    fileroot = 'weather_%.1f_' % cloud_limit
     file_end = 'v1.6_'
 
     if scale_down:
