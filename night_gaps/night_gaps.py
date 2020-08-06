@@ -350,8 +350,8 @@ if __name__ == "__main__":
     details = [detailers.Camera_rot_detailer(min_rot=-camera_ddf_rot_limit, max_rot=camera_ddf_rot_limit), dither_detailer]
     ddfs = generate_dd_surveys(nside=nside, nexp=nexp, detailers=details)
 
-    greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints, gap_fp=gap_fp, gap_weight=gap_weight)
-    blobs = generate_blobs(nside, nexp=nexp, footprints=footprints, gap_fp=gap_fp, gap_weight=gap_weight)
+    greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints, gap_fp=gap_fp, night_gap_weight=gap_weight)
+    blobs = generate_blobs(nside, nexp=nexp, footprints=footprints, gap_fp=gap_fp, night_gap_weight=gap_weight)
     surveys = [ddfs, blobs, greedy]
     run_sched(surveys, survey_length=survey_length, verbose=verbose,
               fileroot=os.path.join(outDir, fileroot+file_end), extra_info=extra_info,

@@ -1,0 +1,7 @@
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps/night_gaps.py --gap_weight 0 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps/night_gaps.py --gap_weight 0.5 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps/night_gaps.py --gap_weight 1 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps/night_gaps.py --gap_weight 3 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps/night_gaps.py --gap_weight 6 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps/night_gaps.py --gap_weight 10 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps/night_gaps.py --gap_weight 20 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/night_gaps
