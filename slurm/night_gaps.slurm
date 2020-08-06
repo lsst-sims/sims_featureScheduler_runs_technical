@@ -57,5 +57,5 @@ cd /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/slurm
 ## run all the baseline commands in parallel
 module load parallel-20170722
 ## only need to do 5 at a time, since there are only that many in the list
-cat run_night_gaps.script | parallel -j 20
+cat run_night_gap.script | parallel -j 20
 
