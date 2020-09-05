@@ -3,7 +3,7 @@ import matplotlib.pylab as plt
 import healpy as hp
 from lsst.sims.featureScheduler.modelObservatory import Model_observatory
 from lsst.sims.featureScheduler.schedulers import Core_scheduler, simple_filter_sched
-from lsst.sims.featureScheduler.utils import standard_goals, generate_goal_map, Footprint, empty_observation
+from lsst.sims.featureScheduler.utils import standard_goals, generate_goal_map, Footprint, scheduled_observation
 import lsst.sims.featureScheduler.basis_functions as bf
 from lsst.sims.featureScheduler.surveys import (Greedy_survey, generate_dd_surveys,
                                                 Blob_survey, Scripted_survey)
@@ -22,7 +22,7 @@ def gen_scripted_survey():
     # Let's take an r-band image at the south pole the middle of each night.
     # Might get blocked by DDF unless we crank the time tolerance farther open
     mjds = np.genfromtxt('mjds.dat')
-    eo = empty_observation()
+    eo = scheduled_observation()
     observations = np.zeros(mjds.size, dtype=eo.dtype)
     observations['mjd'] = mjds
     observations['RA'] = 0
@@ -31,6 +31,15 @@ def gen_scripted_survey():
     observations['exptime'] = 30.
     observations['nexp'] = 1
     observations['filter'] = 'r'
+
+    # Set the constraints on when it can be observed
+    observations['mjd_tol'] = 15./60./24. # It can start up to 15 mintues early
+    observations['flush_by_mjd'] = mjds + 1.5 # Can execute up to 1.5 days late
+    observations['dist_tol'] = np.radians(1.5) # has to be within 1.5 degrees
+    observations['alt_min'] = np.radians(30.) 
+    observations['alt_max'] = np.radians(80.)
+    observations['HA_max'] = 18.
+    observations['HA_min'] = 6.
 
     survey = Scripted_survey([])
     survey.set_script(observations)
@@ -346,7 +355,7 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'scheduled_' 
+    fileroot = 'scheduled_'
     file_end = 'v1.6.1_'
 
     if scale_down:
