@@ -27,16 +27,19 @@ def gen_scripted_survey():
     observations['mjd'] = mjds
     observations['RA'] = 0
     observations['dec'] = np.radians(-90.)
-    observations['note'] = 'SouthPole'
+    observations['note'] = 'SouthPole, '
+    tag = np.arange(mjds.size)
+    for i, _ack in enumerate(observations):
+        observations['note'][i] = observations['note'][i] + '%s' % tag[i]
     observations['exptime'] = 30.
     observations['nexp'] = 1
     observations['filter'] = 'r'
 
     # Set the constraints on when it can be observed
-    observations['mjd_tol'] = 15./60./24. # It can start up to 15 mintues early
-    observations['flush_by_mjd'] = mjds + 1.5 # Can execute up to 1.5 days late
-    observations['dist_tol'] = np.radians(1.5) # has to be within 1.5 degrees
-    observations['alt_min'] = np.radians(30.) 
+    observations['mjd_tol'] = 15./60./24.  # It can start up to 15 mintues early
+    observations['flush_by_mjd'] = mjds + 1.5  # Can execute up to 1.5 days late
+    observations['dist_tol'] = np.radians(1.5)  # has to be within 1.5 degrees
+    observations['alt_min'] = np.radians(30.)
     observations['alt_max'] = np.radians(80.)
     observations['HA_max'] = 18.
     observations['HA_min'] = 6.
