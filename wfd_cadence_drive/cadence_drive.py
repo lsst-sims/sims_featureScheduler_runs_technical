@@ -150,15 +150,16 @@ def generate_blobs(nside, nexp=1, exptime=30., filter1s=['u', 'u', 'g', 'r', 'i'
                           'read_approx': 2., 'min_pair_time': 15., 'search_radius': 30.,
                           'alt_max': 85., 'az_range': 90., 'flush_time': 30.,
                           'smoothing_kernel': None, 'nside': nside, 'seed': 42, 'dither': True,
-                          'twilight_scale': True}
+                          'twilight_scale': True, 'grow_blob': True}
 
     plan_ahead_survey_params = {'slew_approx': 7.5, 'filter_change_approx': 140.,
                                 'read_approx': 2., 'min_pair_time': 15., 'search_radius': 30.,
                                 'alt_max': 85., 'az_range': 90., 'flush_time': 30.,
                                 'smoothing_kernel': None, 'nside': nside, 'seed': 42, 'dither': True,
                                 'twilight_scale': True,
-                                'delta_mjd_tol': 0.3/24., 'minimum_sky_area': 150.,
-                                'track_filters': 'g', 'in_season': 2.5, 'cadence': 9}
+                                'grow_blob': False,
+                                'delta_mjd_tol': 0.3/24., 'minimum_sky_area': 250.,
+                                'track_filters': 'g', 'in_season': 2.5, 'cadence': 15}
 
     surveys = []
 
@@ -217,9 +218,10 @@ def generate_blobs(nside, nexp=1, exptime=30., filter1s=['u', 'u', 'g', 'r', 'i'
             time_needed = times_needed[1]
 
         if (filtername == 'g') & (cadence_weight is not None):
+            # XXX--pull these numbers up to the top
             bfs.append((bf.Cadence_enhance_trapezoid_basis_function(filtername='g', nside=nside, apply_area=cadence_footprint,
                                                                     delay_width=4., delay_slope=2., delay_peak=0, delay_amp=0.5,
-                                                                    enhance_width=5., enhance_slope=2., enhance_peak=10.5,
+                                                                    enhance_width=5., enhance_slope=2., enhance_peak=15.,
                                                                     enhance_amp=1., season_limit=2.5), cadence_weight))
         else:
             bfs.append((bf.Time_to_scheduled_basis_function(time_needed=time_needed), 0))
