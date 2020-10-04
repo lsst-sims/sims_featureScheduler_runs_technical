@@ -98,7 +98,7 @@ def generate_blobs(nside, nexp=1, exptime=30., filter1s=['u', 'u', 'g', 'r', 'i'
                    shadow_minutes=60., max_alt=76., moon_distance=30., ignore_obs='DD',
                    m5_weight=6., footprint_weight=0.6, slewtime_weight=3.,
                    stayfilter_weight=3., template_weight=12., footprints=None,
-                   cadence_footprint=None, cadence_weight=None):
+                   cadence_footprint=None, cadence_weight=None, g_fill_limit=500.):
     """
     Generate surveys that take observations in blobs.
 
@@ -223,6 +223,7 @@ def generate_blobs(nside, nexp=1, exptime=30., filter1s=['u', 'u', 'g', 'r', 'i'
                                                                     delay_width=4., delay_slope=2., delay_peak=0, delay_amp=0.5,
                                                                     enhance_width=5., enhance_slope=2., enhance_peak=15.,
                                                                     enhance_amp=1., season_limit=2.5), cadence_weight))
+            bfs.append((bf.Limit_obs_pnight_basis_function(survey_str='gap', nlimit=g_fill_limit), 0.))
         else:
             bfs.append((bf.Time_to_scheduled_basis_function(time_needed=time_needed), 0))
 
@@ -323,6 +324,7 @@ if __name__ == "__main__":
     parser.add_argument("--moon_illum_limit", type=float, default=40., help="illumination limit to remove u-band")
     parser.add_argument("--nexp", type=int, default=1)
     parser.add_argument("--scale_down", dest='scale_down', action='store_true')
+    parser.add_argument("--gfill_limit", type=int, default=30)
     parser.set_defaults(scale_down=False)
 
     args = parser.parse_args()
@@ -333,6 +335,7 @@ if __name__ == "__main__":
     illum_limit = args.moon_illum_limit
     nexp = args.nexp
     scale_down = args.scale_down
+    gfill_limit = args.gfill_limit
 
     nside = 32
     per_night = True  # Dither DDF per night
@@ -351,7 +354,7 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'cadence_drive_'
+    fileroot = 'cadence_drive_gl%i' % gfill_limit
     file_end = 'v1.6.1_'
 
     if scale_down:
@@ -377,7 +380,7 @@ if __name__ == "__main__":
     greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints)
     prevent_gaps = generate_blobs(nside, filter1s=['g'], filter2s=['r'],
                                   nexp=nexp, footprints=footprints, cadence_footprint=wfd_footprint,
-                                  cadence_weight=20.)
+                                  cadence_weight=20., g_fill_limit=gfill_limit)
     blobs = generate_blobs(nside, nexp=nexp, footprints=footprints, cadence_footprint=wfd_footprint)
     surveys = [ddfs, prevent_gaps, blobs, greedy]
     run_sched(surveys, survey_length=survey_length, verbose=verbose,
