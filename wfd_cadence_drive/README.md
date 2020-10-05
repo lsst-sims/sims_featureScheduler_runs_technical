@@ -18,3 +18,11 @@ Thinking more--it is going to be tough to make this behave where it goes after a
 Might need to make a survey object that looks to see if a blob of observations filling a gap should be done. Could actially have it look ahead on the night, then broadcast when it will want to observe so other things respect it!
 
 
+---------
+
+Looks like the dithering doesn't hold up when we turn on a survey object that tries to fill in g-band. 
+
+I think part of the problem might be we have discontiunous areas we want to observe. Also, might have area near the moon that we want to observe and triggers our timing, but then can't obseve, so we end up piled up with observations in other areas.
+
+Might want to try this with the rolling candence, and include a basis function to supress g-band observations at a high cadence (maybe decrease for 4 days?)
+
