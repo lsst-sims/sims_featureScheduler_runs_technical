@@ -98,7 +98,7 @@ def generate_blobs(nside, nexp=1, exptime=30., filter1s=['u', 'u', 'g', 'r', 'i'
                    shadow_minutes=60., max_alt=76., moon_distance=30., ignore_obs='DD',
                    m5_weight=6., footprint_weight=0.6, slewtime_weight=3.,
                    stayfilter_weight=3., template_weight=12., footprints=None,
-                   cadence_footprint=None, cadence_weight=None, g_fill_limit=500.):
+                   cadence_footprint=None, cadence_weight=None, g_fill_limit=500., grow_cadence_blob=False):
     """
     Generate surveys that take observations in blobs.
 
@@ -157,7 +157,6 @@ def generate_blobs(nside, nexp=1, exptime=30., filter1s=['u', 'u', 'g', 'r', 'i'
                                 'alt_max': 85., 'az_range': 90., 'flush_time': 30.,
                                 'smoothing_kernel': None, 'nside': nside, 'seed': 42, 'dither': True,
                                 'twilight_scale': True,
-                                'grow_blob': False,
                                 'delta_mjd_tol': 0.3/24., 'minimum_sky_area': 250.,
                                 'track_filters': 'g', 'in_season': 2.5, 'cadence': 15}
 
@@ -257,7 +256,8 @@ def generate_blobs(nside, nexp=1, exptime=30., filter1s=['u', 'u', 'g', 'r', 'i'
                                              exptime=exptime,
                                              ideal_pair_time=pair_time,
                                              survey_note='gap, %s%s' % (filtername, filtername2), ignore_obs=ignore_obs,
-                                             nexp=nexp, detailers=detailer_list, **plan_ahead_survey_params))
+                                             nexp=nexp, detailers=detailer_list, grow_blob=grow_cadence_blob,
+                                             **plan_ahead_survey_params))
 
     return surveys
 
@@ -325,6 +325,8 @@ if __name__ == "__main__":
     parser.add_argument("--nexp", type=int, default=1)
     parser.add_argument("--scale_down", dest='scale_down', action='store_true')
     parser.add_argument("--gfill_limit", type=int, default=30)
+    parser.add_argument("--gcb", dest='gcb', action='store_true')
+    parser.set_defaults(gcb=False)
     parser.set_defaults(scale_down=False)
 
     args = parser.parse_args()
@@ -336,6 +338,7 @@ if __name__ == "__main__":
     nexp = args.nexp
     scale_down = args.scale_down
     gfill_limit = args.gfill_limit
+    gcb = args.gcb
 
     nside = 32
     per_night = True  # Dither DDF per night
@@ -355,6 +358,8 @@ if __name__ == "__main__":
     extra_info['file executed'] = os.path.realpath(__file__)
 
     fileroot = 'cadence_drive_gl%i' % gfill_limit
+    if gcb:
+        fileroot += '_gcb'
     file_end = 'v1.6.1_'
 
     if scale_down:
