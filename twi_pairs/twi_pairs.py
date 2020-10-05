@@ -97,7 +97,8 @@ def generate_twi_blobs(nside, nexp=1, exptime=30., filter1s=['r', 'i', 'z', 'y']
                        season=300., season_start_hour=-4., season_end_hour=2.,
                        shadow_minutes=60., max_alt=76., moon_distance=30., ignore_obs='DD',
                        m5_weight=6., footprint_weight=0.6, slewtime_weight=3.,
-                       stayfilter_weight=3., template_weight=12., footprints=None):
+                       stayfilter_weight=3., template_weight=12., footprints=None, repeat_night_weight=None,
+                       wfd_footprint=None):
     """
     Generate surveys that take observations in blobs.
 
@@ -201,6 +202,10 @@ def generate_twi_blobs(nside, nexp=1, exptime=30., filter1s=['r', 'i', 'z', 'y']
                                                          n_obs=n_obs_template, season=season,
                                                          season_start_hour=season_start_hour,
                                                          season_end_hour=season_end_hour), template_weight))
+        if repeat_night_weight is not None:
+            bfs.append((bf.Avoid_long_gaps_basis_function(nside=nside, filtername=None,
+                                                          min_gap=0., max_gap=10./24., ha_limit=3.5,
+                                                          footprint=wfd_footprint), repeat_night_weight))
         # Masks, give these 0 weight
         bfs.append((bf.Zenith_shadow_mask_basis_function(nside=nside, shadow_minutes=shadow_minutes, max_alt=max_alt,
                                                          penalty=np.nan, site='LSST'), 0.))
@@ -437,6 +442,8 @@ if __name__ == "__main__":
     parser.add_argument("--moon_illum_limit", type=float, default=40., help="illumination limit to remove u-band")
     parser.add_argument("--nexp", type=int, default=1)
     parser.add_argument("--scale_down", dest='scale_down', action='store_true')
+    parser.add_argument("--repeat_night", dest='repeat_night', action='store_true')
+    parser.set_defaults(repeat_night=False)
     parser.set_defaults(scale_down=False)
 
     args = parser.parse_args()
@@ -447,6 +454,7 @@ if __name__ == "__main__":
     illum_limit = args.moon_illum_limit
     nexp = args.nexp
     scale_down = args.scale_down
+    repeat_night = args.repeat_night
 
     nside = 32
     per_night = True  # Dither DDF per night
@@ -465,7 +473,9 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'twi_pairs'
+    fileroot = 'twi_pairs_'
+    if repeat_night:
+        fileroot += 'repeat_'
     file_end = 'v1.6.1_'
 
     if scale_down:
@@ -473,6 +483,9 @@ if __name__ == "__main__":
         fileroot = fileroot +'scaleddown_'
     else:
         footprints_hp = standard_goals(nside=nside)
+
+    wfd_footprint = footprints_hp['r']*0
+    wfd_footprint[np.where(footprints_hp['r'] == 1)] = 1
 
     observatory = Model_observatory(nside=nside)
     conditions = observatory.return_conditions()
@@ -486,7 +499,12 @@ if __name__ == "__main__":
     ddfs = generate_dd_surveys(nside=nside, nexp=nexp, detailers=details)
 
     greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints)
-    twi_blobs = generate_twi_blobs(nside, nexp=nexp, footprints=footprints)
+    if repeat_night:
+        repeat_night_weight = 20
+    else:
+        repeat_night_weight = None
+    twi_blobs = generate_twi_blobs(nside, nexp=nexp, footprints=footprints, wfd_footprint=wfd_footprint,
+                                   repeat_night_weight=repeat_night_weight)
     blobs = generate_blobs(nside, nexp=nexp, footprints=footprints)
     surveys = [ddfs, blobs, twi_blobs, greedy]
     run_sched(surveys, survey_length=survey_length, verbose=verbose,

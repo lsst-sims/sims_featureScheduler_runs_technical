@@ -1,0 +1,4 @@
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/twi_pairs/twi_pairs.py --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/twi_pairs
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/twi_pairs/twi_pairs.py --repeat_night --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/twi_pairs
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/twi_pairs/twi_pairs_mixed.py --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/twi_pairs
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/twi_pairs/twi_pairs_mixed.py --repeat_night --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/twi_pairs
