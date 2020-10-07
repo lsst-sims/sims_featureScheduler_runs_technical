@@ -17,12 +17,10 @@ Thinking more--it is going to be tough to make this behave where it goes after a
 
 Might need to make a survey object that looks to see if a blob of observations filling a gap should be done. Could actially have it look ahead on the night, then broadcast when it will want to observe so other things respect it!
 
+-------------
+Notes on the survey object
 
----------
+* we need to include the moon mask (even if there are lots of HEALpix around the moon, we can't get them)
+* There's also the issue of the zenith mask. That needs to be dealt with
 
-Looks like the dithering doesn't hold up when we turn on a survey object that tries to fill in g-band. 
-
-I think part of the problem might be we have discontiunous areas we want to observe. Also, might have area near the moon that we want to observe and triggers our timing, but then can't obseve, so we end up piled up with observations in other areas.
-
-Might want to try this with the rolling candence, and include a basis function to supress g-band observations at a high cadence (maybe decrease for 4 days?)
-
+So we need something a bit more sophisticated. Maybe the feature of last observed in g, the moon mask. Then grow a blob. If the blob is big enough, figure out when it would be best observed in the night (near meridian, small hour angle, moon down if possible), and schedule it.
