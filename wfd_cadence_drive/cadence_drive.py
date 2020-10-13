@@ -386,7 +386,8 @@ if __name__ == "__main__":
     prevent_gaps = generate_blobs(nside, filter1s=['g'], filter2s=['r'],
                                   nexp=nexp, footprints=footprints, cadence_footprint=wfd_footprint,
                                   cadence_weight=20., g_fill_limit=gfill_limit)
-    blobs = generate_blobs(nside, nexp=nexp, footprints=footprints, cadence_footprint=wfd_footprint)
+    blobs = generate_blobs(nside, nexp=nexp, footprints=footprints, cadence_footprint=wfd_footprint,
+                           grow_cadence_blob=gcb)
     surveys = [ddfs, prevent_gaps, blobs, greedy]
     run_sched(surveys, survey_length=survey_length, verbose=verbose,
               fileroot=os.path.join(outDir, fileroot+file_end), extra_info=extra_info,

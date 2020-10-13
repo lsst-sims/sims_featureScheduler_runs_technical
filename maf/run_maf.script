@@ -20,7 +20,7 @@ python ../glance_dir.py --db twi_pairs_v1.6.1_10yrs.db
 python ../glance_dir.py --db cadence_drive_gl30v1.6.1_10yrs.db
 python ../glance_dir.py --db footprint_var_3_v1.6.1_10yrs.db
 python ../glance_dir.py --db footprint_var_9_v1.6.1_10yrs.db
-python ../glance_dir.py --db baseline_nexp1_v1.6_10yrs.db
+python ../glance_dir.py --db baseline_nexp1_v1.6.1_10yrs.db
 python ../scimaf_dir.py --db cadence_drive_gl100_gcbv1.6.1_10yrs.db
 python ../scimaf_dir.py --db footprint_var_0_v1.6.1_10yrs.db
 python ../scimaf_dir.py --db footprint_var_4_v1.6.1_10yrs.db
@@ -43,4 +43,4 @@ python ../scimaf_dir.py --db twi_pairs_v1.6.1_10yrs.db
 python ../scimaf_dir.py --db cadence_drive_gl30v1.6.1_10yrs.db
 python ../scimaf_dir.py --db footprint_var_3_v1.6.1_10yrs.db
 python ../scimaf_dir.py --db footprint_var_9_v1.6.1_10yrs.db
-python ../scimaf_dir.py --db baseline_nexp1_v1.6_10yrs.db
+python ../scimaf_dir.py --db baseline_nexp1_v1.6.1_10yrs.db
