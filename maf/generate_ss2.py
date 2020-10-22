@@ -18,6 +18,6 @@ with open('ss2_script.sh', 'w') as f:
             print('run_moving_calc.py --characterization inner --obsFile '+
                   '%s__%s_obs.txt ' % (run, pop) + 
                   '--opsimDb %s.db ' % run + '--orbitFile '+orbit_files[pop] + 
-                  '--outDir %s_ss ' % run +
+                  ' --outDir %s_ss ' % run +
                   '--opsimRun %s' % run,
                   file=f)
