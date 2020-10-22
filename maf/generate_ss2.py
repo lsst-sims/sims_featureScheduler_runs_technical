@@ -21,3 +21,8 @@ with open('ss2_script.sh', 'w') as f:
                   ' --outDir %s_ss ' % run +
                   '--opsimRun %s' % run,
                   file=f)
+
+with open('ss3_script.sh', 'w') as f:
+    for run in runs:
+        print('run_moving_fractions.py --workDir %s_ss' % run,
+              file=f)
