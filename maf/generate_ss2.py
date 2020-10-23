@@ -8,6 +8,9 @@ pops = ['granvik_5k', 'l7_5k']
 orbit_files = {'granvik_5k':'/gscratch/astro/lynnej/orbits/granvik_5k/granvik_5k.txt',
                'l7_5k': '/gscratch/astro/lynnej/orbits/l7_5k/l7_5k.txt'}
 
+ranges = {'granvik_5k': (16, 18, 0.2),
+          'l7_5k': (4, 12, 0.2)}
+
 runs = [file.replace('.db', '') for file in dbfiles]
 
 runs = [run for run in runs if 'tracking' not in run]
@@ -19,7 +22,8 @@ with open('ss2_script.sh', 'w') as f:
                   '%s__%s_obs.txt ' % (run, pop) + 
                   '--opsimDb %s.db ' % run + '--orbitFile '+orbit_files[pop] + 
                   ' --outDir %s_%s ' % (run, pop) +
-                  '--opsimRun %s' % run,
+                  '--opsimRun %s' % run +
+                  '--hMin %f --hMax %f --hStep %f' % ranges[pop],
                   file=f)
 
 with open('ss3_script.sh', 'w') as f:
