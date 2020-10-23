@@ -5,11 +5,17 @@ dbfiles.sort()
 
 pops = ['granvik_5k', 'l7_5k']
 
-orbit_files = {'granvik_5k':'/gscratch/astro/lynnej/orbits/granvik_5k/granvik_5k.txt',
+orbit_files = {'granvik_5k': '/gscratch/astro/lynnej/orbits/granvik_5k/granvik_5k.txt',
                'l7_5k': '/gscratch/astro/lynnej/orbits/l7_5k/l7_5k.txt'}
 
 ranges = {'granvik_5k': (16, 18, 0.2),
           'l7_5k': (4, 12, 0.2)}
+
+metadatas = {'granvik_5k': 'NEO',
+             'l7_5k': 'TNO'}
+
+hmarks = {'granvik_5k': 22,
+          'l7_5k': 8}
 
 runs = [file.replace('.db', '') for file in dbfiles]
 
@@ -29,5 +35,7 @@ with open('ss2_script.sh', 'w') as f:
 with open('ss3_script.sh', 'w') as f:
     for run in runs:
         for pop in pops:
-            print('run_moving_fractions.py --workDir %s_%s' % (run, pop),
+            print('run_moving_fractions.py --workDir %s_%s' % (run, pop) + 
+                  '--metadata %s ' % metadatas[pop] + 
+                  '--hMark %i' % hmarks[pop],
                   file=f)
