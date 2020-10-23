@@ -1,46 +1,46 @@
-run_moving_fractions.py --workDir baseline_nexp1_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir baseline_nexp1_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir cadence_drive_gl100_gcbv1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir cadence_drive_gl100_gcbv1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir cadence_drive_gl100v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir cadence_drive_gl100v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir cadence_drive_gl200_gcbv1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir cadence_drive_gl200_gcbv1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir cadence_drive_gl200v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir cadence_drive_gl200v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir cadence_drive_gl30_gcbv1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir cadence_drive_gl30_gcbv1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir cadence_drive_gl30v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir cadence_drive_gl30v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir footprint_var_0_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir footprint_var_0_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir footprint_var_10_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir footprint_var_10_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir footprint_var_11_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir footprint_var_11_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir footprint_var_1_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir footprint_var_1_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir footprint_var_2_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir footprint_var_2_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir footprint_var_3_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir footprint_var_3_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir footprint_var_4_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir footprint_var_4_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir footprint_var_5_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir footprint_var_5_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir footprint_var_6_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir footprint_var_6_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir footprint_var_7_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir footprint_var_7_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir footprint_var_8_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir footprint_var_8_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir footprint_var_9_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir footprint_var_9_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir twi_pairs_mixed_repeat_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir twi_pairs_mixed_repeat_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir twi_pairs_mixed_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir twi_pairs_mixed_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir twi_pairs_repeat_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir twi_pairs_repeat_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
-run_moving_fractions.py --workDir twi_pairs_v1.6.1_10yrs_granvik_5k--metadata NEO --hMark 22
-run_moving_fractions.py --workDir twi_pairs_v1.6.1_10yrs_l7_5k--metadata TNO --hMark 8
+run_moving_fractions.py --workDir baseline_nexp1_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir baseline_nexp1_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir cadence_drive_gl100_gcbv1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir cadence_drive_gl100_gcbv1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir cadence_drive_gl100v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir cadence_drive_gl100v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir cadence_drive_gl200_gcbv1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir cadence_drive_gl200_gcbv1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir cadence_drive_gl200v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir cadence_drive_gl200v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir cadence_drive_gl30_gcbv1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir cadence_drive_gl30_gcbv1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir cadence_drive_gl30v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir cadence_drive_gl30v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir footprint_var_0_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir footprint_var_0_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir footprint_var_10_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir footprint_var_10_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir footprint_var_11_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir footprint_var_11_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir footprint_var_1_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir footprint_var_1_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir footprint_var_2_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir footprint_var_2_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir footprint_var_3_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir footprint_var_3_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir footprint_var_4_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir footprint_var_4_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir footprint_var_5_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir footprint_var_5_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir footprint_var_6_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir footprint_var_6_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir footprint_var_7_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir footprint_var_7_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir footprint_var_8_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir footprint_var_8_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir footprint_var_9_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir footprint_var_9_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir twi_pairs_mixed_repeat_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir twi_pairs_mixed_repeat_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir twi_pairs_mixed_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir twi_pairs_mixed_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir twi_pairs_repeat_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir twi_pairs_repeat_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8
+run_moving_fractions.py --workDir twi_pairs_v1.6.1_10yrs_granvik_5k --metadata NEO --hMark 22
+run_moving_fractions.py --workDir twi_pairs_v1.6.1_10yrs_l7_5k --metadata TNO --hMark 8

@@ -35,7 +35,7 @@ with open('ss2_script.sh', 'w') as f:
 with open('ss3_script.sh', 'w') as f:
     for run in runs:
         for pop in pops:
-            print('run_moving_fractions.py --workDir %s_%s' % (run, pop) + 
+            print('run_moving_fractions.py --workDir %s_%s ' % (run, pop) + 
                   '--metadata %s ' % metadatas[pop] + 
                   '--hMark %i' % hmarks[pop],
                   file=f)
