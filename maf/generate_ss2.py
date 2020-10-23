@@ -22,8 +22,8 @@ with open('ss2_script.sh', 'w') as f:
                   '%s__%s_obs.txt ' % (run, pop) + 
                   '--opsimDb %s.db ' % run + '--orbitFile '+orbit_files[pop] + 
                   ' --outDir %s_%s ' % (run, pop) +
-                  '--opsimRun %s' % run +
-                  '--hMin %f --hMax %f --hStep %f' % ranges[pop],
+                  '--opsimRun %s ' % run +
+                  '--hMin %0.2f --hMax %0.2f --hStep %0.2f' % ranges[pop],
                   file=f)
 
 with open('ss3_script.sh', 'w') as f:
