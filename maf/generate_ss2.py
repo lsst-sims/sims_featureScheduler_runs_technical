@@ -8,7 +8,7 @@ pops = ['granvik_5k', 'l7_5k']
 orbit_files = {'granvik_5k': '/gscratch/astro/lynnej/orbits/granvik_5k/granvik_5k.txt',
                'l7_5k': '/gscratch/astro/lynnej/orbits/l7_5k/l7_5k.txt'}
 
-ranges = {'granvik_5k': (16, 18, 0.2),
+ranges = {'granvik_5k': (16, 22, 0.2),
           'l7_5k': (4, 12, 0.2)}
 
 metadatas = {'granvik_5k': 'NEO',
