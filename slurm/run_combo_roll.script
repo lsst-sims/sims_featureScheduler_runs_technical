@@ -1,9 +1,7 @@
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 2 --scale 0.2 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 2 --scale 0.4 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 2 --scale 0.6 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
 python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 2 --scale 0.8 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 3 --scale 0.8 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 6 --scale 0.8 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
 python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 2 --scale 0.9 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 3 --scale 0.9 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 6 --scale 0.9 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 2 --scale 0.95 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 3 --scale 0.95 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 6 --scale 0.95 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll/combo_dust.py --nslice 2 --scale 1 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/combo_roll
+

@@ -499,7 +499,7 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'combo_dust_scale%.2f_nslice%i_' % (scale, nslice)
+    fileroot = 'combo_dust_scale%.1f_nslice%i_' % (scale, nslice)
     if nexp != 1:
         fileroot += 'nexp%i_' % nexp
     file_end = 'v1.6.1_'
