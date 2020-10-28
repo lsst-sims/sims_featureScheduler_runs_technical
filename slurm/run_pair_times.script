@@ -1,0 +1,5 @@
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/pair_times/pair_times.py --pair_time 11 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/pair_times
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/pair_times/pair_times.py --pair_time 22 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/pair_times
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/pair_times/pair_times.py --pair_time 33 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/pair_times
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/pair_times/pair_times.py --pair_time 44 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/pair_times
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/pair_times/pair_times.py --pair_time 55 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/pair_times

@@ -20,10 +20,12 @@ from lsst.utils import getPackageDir
 
 
 
-def slice_wfd_area_quad(target_map, nslice=2):
+def slice_wfd_area_quad(target_map):
     """
-    Make a fancy double striped map
+    Make a fancy 4-stripe target map
     """
+    # Make it so things still sum to one.
+    nslice = 2
     nslice2 = nslice * 2
 
     wfd = target_map['r'] * 0
@@ -377,9 +379,6 @@ def combo_dust_fp(nside=32,
                   bulge_lon_span=20., bulge_alt_span=10.,
                   north_weights={'g': 0.03, 'r': 0.03, 'i': 0.03}, north_limit=30.):
     """
-    Based on the Olsen et al Cadence White Paper
-
-    XXX---need to refactor and get rid of all the magic numbers everywhere.
     """
 
     ebvDataDir = getPackageDir('sims_maps')
@@ -459,6 +458,38 @@ def combo_dust_fp(nside=32,
     return result
 
 
+
+def footprint_maker(fpid):
+
+    fps = []
+    # Defaults
+    fps.append(combo_dust_fp())
+    # No northern stripe
+    fps.append(combo_dust_fp(north_weights={}))
+    # Heavy North Stripe
+    fps.append(combo_dust_fp(north_weights={'g': 0.1, 'r': 0.1, 'i': 0.1}))
+    # Drop the LMC/SMC
+    fps.append(combo_dust_fp(mc_wfd=False))
+    # No outer Bridge
+    fps.append(combo_dust_fp(outer_bridge_width=0.))
+    # Wide bridge
+    fps.append(combo_dust_fp(outer_bridge_width=20.))
+    # No bulge
+    fps.append(combo_dust_fp(bulge_lon_span=0., bulge_alt_span=0.))
+    # big bulge
+    fps.append(combo_dust_fp(bulge_lon_span=25., bulge_alt_span=15.))
+    # lower dusty region
+    fps.append(combo_dust_fp(wfd_dust_weights={'u': 0.13/2, 'g': 0.13/2, 'r': 0.25/2, 'i': 0.25/2, 'z': 0.25/2, 'y': 0.25/2}))
+    # higher dusty region
+    fps.append(combo_dust_fp(wfd_dust_weights={'u': 0.13*2, 'g': 0.13*2, 'r': 0.25*2, 'i': 0.25*2, 'z': 0.25*2, 'y': 0.25*2}))
+    # More NES
+    fps.append(combo_dust_fp(nes_weights={'u': 0, 'g': 0.4, 'r': 0.9, 'i': 0.9, 'z': 0.88, 'y': 0}))
+    # Less NES
+    fps.append(combo_dust_fp(nes_weights={'u': 0, 'g': 0.1, 'r': 0.23, 'i': 0.23, 'z': 0.2, 'y': 0}))
+
+    return fps[fpid]
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -471,6 +502,7 @@ if __name__ == "__main__":
     parser.add_argument("--scale", type=float, default=0.8)
     parser.add_argument("--nexp", type=int, default=1)
 
+
     args = parser.parse_args()
     survey_length = args.survey_length  # Days
     outDir = args.outDir
@@ -479,6 +511,7 @@ if __name__ == "__main__":
     scale = args.scale
     nslice = args.nslice
     nexp = args.nexp
+    fpid = args.fpid
 
     nside = 32
     per_night = True  # Dither DDF per night
@@ -497,7 +530,7 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'combo_dust_scale%.1f_nslice%i_' % (scale, nslice)
+    fileroot = 'footprint_tune_'
     if nexp != 1:
         fileroot += 'nexp%i_' % nexp
     file_end = 'v1.6.1_'
@@ -513,9 +546,15 @@ if __name__ == "__main__":
     ddfs = generate_dd_surveys(nside=nside, nexp=nexp, detailers=details)
 
     # Set up rolling maps
-    footprints = make_rolling_footprints(mjd_start=conditions.mjd_start,
-                                         sun_RA_start=conditions.sun_RA_start, nslice=nslice, scale=scale,
-                                         nside=nside)
+    #footprints = make_rolling_footprints(mjd_start=conditions.mjd_start,
+    #                                     sun_RA_start=conditions.sun_RA_start, nslice=nslice, scale=scale,
+    #                                     nside=nside)
+    fp_hp = footprint_maker(fpid)
+    # In case we want to flag the wfd pixels later
+    wfd_hp = np.where(fp_hp['r'] == 1)[0]
+    footprints = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside)
+    for i, key in enumerate(fp_hp):
+        footprints.footprints[i, :] = fp_hp[key]
 
     greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints)
     blobs = generate_blobs(nside, nexp=nexp, footprints=footprints)

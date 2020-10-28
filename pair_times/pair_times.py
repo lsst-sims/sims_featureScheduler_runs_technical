@@ -3,8 +3,7 @@ import matplotlib.pylab as plt
 import healpy as hp
 from lsst.sims.featureScheduler.modelObservatory import Model_observatory
 from lsst.sims.featureScheduler.schedulers import Core_scheduler, simple_filter_sched
-from lsst.sims.featureScheduler.utils import (standard_goals, NES_healpixels, Footprint,
-                                              Footprints, ra_dec_hp_map, Step_slopes, magellanic_clouds_healpixels)
+from lsst.sims.featureScheduler.utils import standard_goals, generate_goal_map, Footprint
 import lsst.sims.featureScheduler.basis_functions as bf
 from lsst.sims.featureScheduler.surveys import (Greedy_survey, generate_dd_surveys,
                                                 Blob_survey)
@@ -14,81 +13,13 @@ import sys
 import subprocess
 import os
 import argparse
-from astropy.coordinates import SkyCoord
-from astropy import units as u
-from lsst.utils import getPackageDir
 
 
-
-def slice_wfd_area_quad(target_map, nslice=2):
-    """
-    Make a fancy double striped map
-    """
-    nslice2 = nslice * 2
-
-    wfd = target_map['r'] * 0
-    wfd_indices = np.where(target_map['r'] == 1)[0]
-    wfd[wfd_indices] = 1
-    wfd_accum = np.cumsum(wfd)
-    split_wfd_indices = np.floor(np.max(wfd_accum)/nslice2*(np.arange(nslice2)+1)).astype(int)
-    split_wfd_indices = split_wfd_indices.tolist()
-    split_wfd_indices = [0] + split_wfd_indices
-
-    return split_wfd_indices
-
-
-def slice_wfd_area(nslice, target_map, scale_down_factor=0.2):
-    """
-    Slice the WFD area into even dec bands
-    """
-    # Make it so things still sum to one.
-    scale_up_factor = nslice - scale_down_factor*(nslice-1)
-
-    wfd = target_map['r'] * 0
-    wfd_indices = np.where(target_map['r'] == 1)[0]
-    wfd[wfd_indices] = 1
-    wfd_accum = np.cumsum(wfd)
-    split_wfd_indices = np.floor(np.max(wfd_accum)/nslice*(np.arange(nslice)+1)).astype(int)
-    split_wfd_indices = split_wfd_indices.tolist()
-    split_wfd_indices = [0] + split_wfd_indices
-
-    all_scaled_down = {}
-    for filtername in target_map:
-        all_scaled_down[filtername] = target_map[filtername]+0
-        all_scaled_down[filtername][wfd_indices] *= scale_down_factor
-
-    scaled_maps = []
-    for i in range(len(split_wfd_indices)-1):
-        new_map = {}
-        indices = wfd_indices[split_wfd_indices[i]:split_wfd_indices[i+1]]
-        for filtername in all_scaled_down:
-            new_map[filtername] = all_scaled_down[filtername] + 0
-            new_map[filtername][indices] = target_map[filtername][indices]*scale_up_factor
-        scaled_maps.append(new_map)
-
-    return scaled_maps
-
-
-def wfd_half(target_map=None):
-    """return Two maps that split the WFD in two dec bands
-    """
-    if target_map is None:
-        sg = combo_dust_fp()
-        target_map = sg['r'] + 0
-    wfd_pix = np.where(target_map == 1)[0]
-    wfd_map = target_map*0
-    wfd_map[wfd_pix] = 1
-    wfd_halves = slice_wfd_area(2, {'r': wfd_map}, scale_down_factor=0)
-    result = [-wfd_halves[0]['r'], -wfd_halves[1]['r']]
-    return result
-
-
-def gen_greedy_surveys(nside=32, footprints=None,
-                       nexp=1, exptime=30., filters=['r', 'i', 'z', 'y'],
+def gen_greedy_surveys(nside=32, nexp=1, exptime=30., filters=['r', 'i', 'z', 'y'],
                        camera_rot_limits=[-80., 80.],
                        shadow_minutes=60., max_alt=76., moon_distance=30., ignore_obs='DD',
-                       m5_weight=6., footprint_weight=0.6, slewtime_weight=3.,
-                       stayfilter_weight=3., roll_weight=3.):
+                       m5_weight=3., footprint_weight=0.3, slewtime_weight=3.,
+                       stayfilter_weight=3., footprints=None):
     """
     Make a quick set of greedy surveys
 
@@ -107,7 +38,7 @@ def gen_greedy_surveys(nside=32, footprints=None,
         The exposure time to use per visit (seconds)
     filters : list of str (['r', 'i', 'z', 'y'])
         Which filters to generate surveys for.
-    camera_rot_limits : list of float ([-87., 87.])
+    camera_rot_limits : list of float ([-80., 80.])
         The limits to impose when rotationally dithering the camera (degrees).
     shadow_minutes : float (60.)
         Used to mask regions around zenith (minutes)
@@ -134,7 +65,7 @@ def gen_greedy_surveys(nside=32, footprints=None,
 
     surveys = []
     detailer = detailers.Camera_rot_detailer(min_rot=np.min(camera_rot_limits), max_rot=np.max(camera_rot_limits))
-    wfd_halves = wfd_half()
+
     for filtername in filters:
         bfs = []
         bfs.append((bf.M5_diff_basis_function(filtername=filtername, nside=nside), m5_weight))
@@ -143,7 +74,6 @@ def gen_greedy_surveys(nside=32, footprints=None,
                                                 out_of_bounds_val=np.nan, nside=nside), footprint_weight))
         bfs.append((bf.Slewtime_basis_function(filtername=filtername, nside=nside), slewtime_weight))
         bfs.append((bf.Strict_filter_basis_function(filtername=filtername), stayfilter_weight))
-        bfs.append((bf.Map_modulo_basis_function(wfd_halves), roll_weight))
         # Masks, give these 0 weight
         bfs.append((bf.Zenith_shadow_mask_basis_function(nside=nside, shadow_minutes=shadow_minutes,
                                                          max_alt=max_alt), 0))
@@ -161,14 +91,13 @@ def gen_greedy_surveys(nside=32, footprints=None,
     return surveys
 
 
-def generate_blobs(nside, nexp=1, footprints=None,
-                   exptime=30., filter1s=['u', 'u', 'g', 'r', 'i', 'z', 'y'],
+def generate_blobs(nside, nexp=1, exptime=30., filter1s=['u', 'u', 'g', 'r', 'i', 'z', 'y'],
                    filter2s=['g', 'r', 'r', 'i', 'z', 'y', 'y'], pair_time=22.,
                    camera_rot_limits=[-80., 80.], n_obs_template=3,
                    season=300., season_start_hour=-4., season_end_hour=2.,
                    shadow_minutes=60., max_alt=76., moon_distance=30., ignore_obs='DD',
                    m5_weight=6., footprint_weight=0.6, slewtime_weight=3.,
-                   stayfilter_weight=3., template_weight=12., roll_weight=3.):
+                   stayfilter_weight=3., template_weight=12., footprints=None):
     """
     Generate surveys that take observations in blobs.
 
@@ -223,7 +152,7 @@ def generate_blobs(nside, nexp=1, footprints=None,
                           'twilight_scale': True}
 
     surveys = []
-    wfd_halves = wfd_half()
+
     times_needed = [pair_time, pair_time*2]
     for filtername, filtername2 in zip(filter1s, filter2s):
         detailer_list = []
@@ -249,8 +178,8 @@ def generate_blobs(nside, nexp=1, footprints=None,
                                                     out_of_bounds_val=np.nan, nside=nside), footprint_weight/2.))
         else:
             bfs.append((bf.Footprint_basis_function(filtername=filtername,
-                                                    footprint=footprints, out_of_bounds_val=np.nan,
-                                                    nside=nside,), footprint_weight))
+                                                    footprint=footprints,
+                                                    out_of_bounds_val=np.nan, nside=nside), footprint_weight))
 
         bfs.append((bf.Slewtime_basis_function(filtername=filtername, nside=nside), slewtime_weight))
         bfs.append((bf.Strict_filter_basis_function(filtername=filtername), stayfilter_weight))
@@ -272,7 +201,6 @@ def generate_blobs(nside, nexp=1, footprints=None,
                                                          n_obs=n_obs_template, season=season,
                                                          season_start_hour=season_start_hour,
                                                          season_end_hour=season_end_hour), template_weight))
-        bfs.append((bf.Map_modulo_basis_function(wfd_halves), roll_weight))
         # Masks, give these 0 weight
         bfs.append((bf.Zenith_shadow_mask_basis_function(nside=nside, shadow_minutes=shadow_minutes, max_alt=max_alt,
                                                          penalty=np.nan, site='LSST'), 0.))
@@ -305,6 +233,42 @@ def generate_blobs(nside, nexp=1, footprints=None,
     return surveys
 
 
+def nes_light_footprints(nside=None):
+    """
+    A quick function to generate the "standard" goal maps. This is the traditional WFD/mini survey footprint.
+    """
+
+    NES_scaledown = 2.
+    SCP_scaledown = 1.5
+
+    result = {}
+    result['u'] = generate_goal_map(nside=nside, NES_fraction=0./NES_scaledown,
+                                    WFD_fraction=0.31, SCP_fraction=0.15/SCP_scaledown,
+                                    GP_fraction=0.15,
+                                    wfd_dec_min=-62.5, wfd_dec_max=3.6)
+    result['g'] = generate_goal_map(nside=nside, NES_fraction=0.2/NES_scaledown,
+                                    WFD_fraction=0.44, SCP_fraction=0.15/SCP_scaledown,
+                                    GP_fraction=0.15,
+                                    wfd_dec_min=-62.5, wfd_dec_max=3.6)
+    result['r'] = generate_goal_map(nside=nside, NES_fraction=0.46/NES_scaledown,
+                                    WFD_fraction=1.0, SCP_fraction=0.15/SCP_scaledown,
+                                    GP_fraction=0.15,
+                                    wfd_dec_min=-62.5, wfd_dec_max=3.6)
+    result['i'] = generate_goal_map(nside=nside, NES_fraction=0.46/NES_scaledown,
+                                    WFD_fraction=1.0, SCP_fraction=0.15/SCP_scaledown,
+                                    GP_fraction=0.15,
+                                    wfd_dec_min=-62.5, wfd_dec_max=3.6)
+    result['z'] = generate_goal_map(nside=nside, NES_fraction=0.4/NES_scaledown,
+                                    WFD_fraction=0.9, SCP_fraction=0.15/SCP_scaledown,
+                                    GP_fraction=0.15,
+                                    wfd_dec_min=-62.5, wfd_dec_max=3.6)
+    result['y'] = generate_goal_map(nside=nside, NES_fraction=0./NES_scaledown,
+                                    WFD_fraction=0.9, SCP_fraction=0.15/SCP_scaledown,
+                                    GP_fraction=0.15,
+                                    wfd_dec_min=-62.5, wfd_dec_max=3.6)
+    return result
+
+
 def run_sched(surveys, survey_length=365.25, nside=32, fileroot='baseline_', verbose=False,
               extra_info=None, illum_limit=40.):
     years = np.round(survey_length/365.25)
@@ -320,145 +284,6 @@ def run_sched(surveys, survey_length=365.25, nside=32, fileroot='baseline_', ver
                                                       filter_scheduler=filter_sched)
 
 
-def make_rolling_footprints(mjd_start=59853.5, sun_RA_start=3.27717639, nslice=2, scale=0.8, nside=32):
-    hp_footprints = combo_dust_fp(nside=nside)
-
-    down = 1.-scale
-    up = nslice - down*(nslice-1)
-    start = [1., 1., 1.]
-    end = [1., 1., 1., 1., 1., 1.]
-    if nslice == 2:
-        rolling = [up, down, up, down, up, down]
-    elif nslice == 3:
-        rolling = [up, down, down, up, down, down]
-    elif nslice == 6:
-        rolling = [up, down, down, down, down, down]
-    all_slopes = [start + np.roll(rolling, i).tolist()+end for i in range(nslice)]
-
-    fp_non_wfd = Footprint(mjd_start, sun_RA_start=sun_RA_start)
-    rolling_footprints = []
-    for i in range(nslice):
-        step_func = Step_slopes(rise=all_slopes[i])
-        rolling_footprints.append(Footprint(mjd_start, sun_RA_start=sun_RA_start,
-                                            step_func=step_func))
-
-    split_wfd_indices = slice_wfd_area_quad(hp_footprints)
-    wfd = hp_footprints['r'] * 0
-    wfd_indx = np.where(hp_footprints['r'] == 1)[0]
-    non_wfd_indx = np.where(hp_footprints['r'] != 1)[0]
-    wfd[wfd_indx] = 1
-    for key in hp_footprints:
-        temp = hp_footprints[key] + 0
-        temp[wfd_indx] = 0
-        fp_non_wfd.set_footprint(key, temp)
-
-        for i in range(2):
-            temp = hp_footprints[key] + 0
-            temp[non_wfd_indx] = 0
-            indx = wfd_indx[split_wfd_indices[i]:split_wfd_indices[i+1]]
-            temp[indx] = 0
-            indx = wfd_indx[split_wfd_indices[i+2]:split_wfd_indices[i+3]]
-            temp[indx] = 0
-            rolling_footprints[i].set_footprint(key, temp)
-
-    result = Footprints([fp_non_wfd] + rolling_footprints)
-    return result
-
-
-def combo_dust_fp(nside=32,
-                  wfd_weights={'u': 0.31, 'g': 0.44, 'r': 1., 'i': 1., 'z': 0.9, 'y': 0.9},
-                  wfd_dust_weights={'u': 0.13, 'g': 0.13, 'r': 0.25, 'i': 0.25, 'z': 0.25, 'y': 0.25},
-                  nes_dist_eclip_n=10., nes_dist_eclip_s=-30., nes_south_limit=-5, ses_dist_eclip=10.,
-                  nes_weights={'u': 0, 'g': 0.2, 'r': 0.46, 'i': 0.46, 'z': 0.4, 'y': 0},
-                  dust_limit=0.19,
-                  wfd_north_dec=12.4, wfd_south_dec=-72.25,
-                  mc_wfd=True,
-                  outer_bridge_l=240, outer_bridge_width=10., outer_bridge_alt=13.,
-                  bulge_lon_span=20., bulge_alt_span=10.,
-                  north_weights={'g': 0.03, 'r': 0.03, 'i': 0.03}, north_limit=30.):
-    """
-    Based on the Olsen et al Cadence White Paper
-
-    XXX---need to refactor and get rid of all the magic numbers everywhere.
-    """
-
-    ebvDataDir = getPackageDir('sims_maps')
-    filename = 'DustMaps/dust_nside_%i.npz' % nside
-    dustmap = np.load(os.path.join(ebvDataDir, filename))['ebvMap']
-
-    # wfd covers -72.25 < dec < 12.4. Avoid galactic plane |b| > 15 deg
-    wfd_north = wfd_north_dec
-    wfd_south = wfd_south_dec
-
-    ra, dec = np.degrees(ra_dec_hp_map(nside=nside))
-    WFD_no_dust = np.zeros(ra.size)
-    WFD_dust = np.zeros(ra.size)
-
-    coord = SkyCoord(ra=ra*u.deg, dec=dec*u.deg)
-    gal_lon, gal_lat = coord.galactic.l.deg, coord.galactic.b.deg
-
-    # let's make a first pass here
-    WFD_no_dust[np.where((dec > wfd_south) &
-                         (dec < wfd_north) &
-                         (dustmap < dust_limit))] = 1.
-
-    WFD_dust[np.where((dec > wfd_south) &
-                      (dec < wfd_north) &
-                      (dustmap > dust_limit))] = 1.
-    WFD_dust[np.where(dec < wfd_south)] = 1.
-
-    # Fill in values for WFD and WFD_dusty
-    result = {}
-    for key in wfd_weights:
-        result[key] = WFD_no_dust + 0.
-        result[key][np.where(result[key] == 1)] = wfd_weights[key]
-        result[key][np.where(WFD_dust == 1)] = wfd_dust_weights[key]
-
-    coord = SkyCoord(ra=ra*u.deg, dec=dec*u.deg)
-    eclip_lat = coord.barycentrictrueecliptic.lat.deg
-
-    # Any part of the NES that is too low gets pumped up
-    nes_indx = np.where(((eclip_lat < nes_dist_eclip_n) & (eclip_lat > nes_dist_eclip_s))
-                        & (dec > nes_south_limit))
-    nes_hp_map = ra*0
-    nes_hp_map[nes_indx] = 1
-    for key in result:
-        result[key][np.where((nes_hp_map > 0) & (result[key] < nes_weights[key]))] = nes_weights[key]
-
-    if mc_wfd:
-        mag_clouds = magellanic_clouds_healpixels(nside)
-        mag_clouds_indx = np.where(mag_clouds > 0)[0]
-    else:
-        mag_clouds_indx = []
-    for key in result:
-        result[key][mag_clouds_indx] = wfd_weights[key]
-
-    # Put in an outer disk bridge
-    outer_disk = np.where((gal_lon < (outer_bridge_l + outer_bridge_width))
-                          & (gal_lon > (outer_bridge_l-outer_bridge_width))
-                          & (np.abs(gal_lat) < outer_bridge_alt))
-    for key in result:
-        result[key][outer_disk] = wfd_weights[key]
-
-    # Make a bulge go WFD
-    bulge_pix = np.where(((gal_lon > (360-bulge_lon_span)) | (gal_lon < bulge_lon_span)) &
-                         (np.abs(gal_lat) < bulge_alt_span))
-    for key in result:
-        result[key][bulge_pix] = wfd_weights[key]
-
-    # Set South ecliptic to the WFD values
-    ses_indx = np.where((np.abs(eclip_lat) < ses_dist_eclip) & (dec < nes_south_limit))
-    for key in result:
-        result[key][ses_indx] = wfd_weights[key]
-
-    # Let's paint all the north as non-zero
-    for key in north_weights:
-        north = np.where((dec < north_limit) & (result[key] == 0))
-        result[key][north] = north_weights[key]
-
-    return result
-
-
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -467,22 +292,25 @@ if __name__ == "__main__":
     parser.add_argument("--survey_length", type=float, default=365.25*10)
     parser.add_argument("--outDir", type=str, default="")
     parser.add_argument("--maxDither", type=float, default=0.7, help="Dither size for DDFs (deg)")
-    parser.add_argument("--nslice", type=int, default=2)
-    parser.add_argument("--scale", type=float, default=0.8)
+    parser.add_argument("--moon_illum_limit", type=float, default=40., help="illumination limit to remove u-band")
     parser.add_argument("--nexp", type=int, default=1)
+    parser.add_argument("--scale_down", dest='scale_down', action='store_true')
+    parser.add_argument("--pair_time", type=float, default=22.)
+    parser.set_defaults(scale_down=False)
 
     args = parser.parse_args()
     survey_length = args.survey_length  # Days
     outDir = args.outDir
     verbose = args.verbose
     max_dither = args.maxDither
-    scale = args.scale
-    nslice = args.nslice
+    illum_limit = args.moon_illum_limit
     nexp = args.nexp
+    scale_down = args.scale_down
+    pair_time = args.pair_time
 
     nside = 32
     per_night = True  # Dither DDF per night
-    mixed_pairs = True  # For the blob scheduler
+
     camera_ddf_rot_limit = 75.
 
     extra_info = {}
@@ -497,29 +325,29 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'combo_dust_scale%.1f_nslice%i_' % (scale, nslice)
-    if nexp != 1:
-        fileroot += 'nexp%i_' % nexp
+    fileroot = 'pair_times_%i_' % pair_time
     file_end = 'v1.6.1_'
 
-    # Mark position of the sun at the start of the survey. Usefull for rolling cadence.
+    if scale_down:
+        footprints_hp = nes_light_footprints(nside=nside)
+        fileroot = fileroot +'scaleddown_'
+    else:
+        footprints_hp = standard_goals(nside=nside)
+
     observatory = Model_observatory(nside=nside)
     conditions = observatory.return_conditions()
-    sun_ra_0 = conditions.sunRA  # radians
+    footprints = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside)
+    for i, key in enumerate(footprints_hp):
+        footprints.footprints[i, :] = footprints_hp[key]
 
     # Set up the DDF surveys to dither
     dither_detailer = detailers.Dither_detailer(per_night=per_night, max_dither=max_dither)
     details = [detailers.Camera_rot_detailer(min_rot=-camera_ddf_rot_limit, max_rot=camera_ddf_rot_limit), dither_detailer]
     ddfs = generate_dd_surveys(nside=nside, nexp=nexp, detailers=details)
 
-    # Set up rolling maps
-    footprints = make_rolling_footprints(mjd_start=conditions.mjd_start,
-                                         sun_RA_start=conditions.sun_RA_start, nslice=nslice, scale=scale,
-                                         nside=nside)
-
     greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints)
-    blobs = generate_blobs(nside, nexp=nexp, footprints=footprints)
+    blobs = generate_blobs(nside, nexp=nexp, footprints=footprints, pair_time=pair_time)
     surveys = [ddfs, blobs, greedy]
     run_sched(surveys, survey_length=survey_length, verbose=verbose,
               fileroot=os.path.join(outDir, fileroot+file_end), extra_info=extra_info,
-              nside=nside)
+              nside=nside, illum_limit=illum_limit)
