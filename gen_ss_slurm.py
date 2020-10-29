@@ -44,7 +44,7 @@ if __name__ == "__main__":
     inner_outer = {'PHA': 'inner', 'NEO': 'inner',
                    'MBA': 'inner', 'Trojan': 'inner',
                    'TNO': 'outer', 'SDO': 'outer',
-                   'oort': 'outer'}
+                   'Oort': 'outer'}
 
     runs = [file.replace('.db', '') for file in db_files]
     runs = [run for run in runs if 'tracking' not in run]
