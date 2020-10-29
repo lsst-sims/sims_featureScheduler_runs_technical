@@ -57,10 +57,10 @@ if __name__ == "__main__":
     with open('ss2_script.sh', 'w') as f:
         for pop in pops:
             for run in runs:
-                print('run_moving_calc.py --characterization %s --obsFile ' % inner_outer[pop] +
+                print('run_moving_calc.py --characterization %s --obsFile ' % inner_outer[pop_labels[pop]] +
                       '%s__%s_obs.txt ' % (run, pop) +
-                      '--opsimDb %s.db ' % run + '--orbitFile '+orbit_files[pop] +
-                      ' --outDir %s ' % run +
+                      '--opsimDb %s.db ' % run + '--orbitFile %s ' % orbit_files[pop] +
+                      '--outDir %s ' % run +
                       '--opsimRun %s ' % run +
                       '--hMin %0.2f --hMax %0.2f --hStep %0.2f ' % ranges[pop] +
                       '--metadata %s ' % pop_labels[pop],
