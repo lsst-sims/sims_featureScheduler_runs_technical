@@ -24,7 +24,7 @@ if __name__ == "__main__":
                      'Trojan': [14, 22, 0.2, 18],
                      'TNO': [6, 12, 0.2, 8],
                      'SDO': [4, 12, 0.2, 7],
-                     'oort': [4, 20, 0.5, 5]}
+                     'Oort': [4, 20, 0.5, 5]}
 
     pop_labels = {'granvik_5k': 'NEO',
                   'granvik_pha_5k': 'PHA',
