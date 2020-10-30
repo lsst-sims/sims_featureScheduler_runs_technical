@@ -1,0 +1,2 @@
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/baseline161/baseline.py --nexp 1 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/baseline161/
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/baseline161/baseline.py --nexp 2 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/baseline161/
