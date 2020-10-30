@@ -12,7 +12,7 @@ if __name__ == "__main__":
                    'l7_5k': os.path.join(orbit_path, 'l7_5k/l7_5k.txt'),
                    'mba_5k': os.path.join(orbit_path, 'mba_5k/mba_5k.txt'),
                    'oort': os.path.join(orbit_path, 'oort/oort.txt'),
-                   'sdo_5k': os.path.join(orbit_path, 'sdo_5k/sdo_5k.txt'),
+                   #'sdo_5k': os.path.join(orbit_path, 'sdo_5k/sdo_5k.txt'),
                    'trojan_5k': os.path.join(orbit_path, 'trojan_5k/trojan_5k.txt'),
                    }
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
                 print('run_moving_calc.py --characterization %s --obsFile ' % inner_outer[pop_labels[pop]] +
                       '%s__%s_obs.txt ' % (run, pop) +
                       '--opsimDb %s.db ' % run + '--orbitFile %s ' % orbit_files[pop] +
-                      '--outDir %s ' % run +
+                      '--outDir %s_%s ' % (run, pop) +
                       '--opsimRun %s ' % run +
                       '--hMin %0.2f --hMax %0.2f --hStep %0.2f ' % ranges[pop] +
                       '--metadata %s ' % pop_labels[pop],
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     with open('ss3_script.sh', 'w') as f:
         for run in runs:
             for pop in pops:
-                print('run_moving_fractions.py --workDir %s ' % run +
+                print('run_moving_fractions.py --workDir %s_%s ' % (run, pop)+
                       '--metadata %s ' % pop_labels[pop] +
                       '--hMark %i' % hmarks[pop],
                       file=f)
