@@ -1,0 +1,7 @@
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune/footprint_tune.py --fpid 0 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune/footprint_tune.py --fpid 1 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune/footprint_tune.py --fpid 2 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune/footprint_tune.py --fpid 3 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune/footprint_tune.py --fpid 4 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune/footprint_tune.py --fpid 5 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune/footprint_tune.py --fpid 6 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/footprint_tune

@@ -458,34 +458,35 @@ def combo_dust_fp(nside=32,
     return result
 
 
-
 def footprint_maker(fpid):
 
     fps = []
-    # Defaults
+    # 0 Defaults
     fps.append(combo_dust_fp())
-    # No northern stripe
+    # 1 No northern stripe
     fps.append(combo_dust_fp(north_weights={}))
-    # Heavy North Stripe
-    fps.append(combo_dust_fp(north_weights={'g': 0.1, 'r': 0.1, 'i': 0.1}))
-    # Drop the LMC/SMC
-    fps.append(combo_dust_fp(mc_wfd=False))
-    # No outer Bridge
-    fps.append(combo_dust_fp(outer_bridge_width=0.))
-    # Wide bridge
-    fps.append(combo_dust_fp(outer_bridge_width=20.))
-    # No bulge
-    fps.append(combo_dust_fp(bulge_lon_span=0., bulge_alt_span=0.))
-    # big bulge
-    fps.append(combo_dust_fp(bulge_lon_span=25., bulge_alt_span=15.))
-    # lower dusty region
-    fps.append(combo_dust_fp(wfd_dust_weights={'u': 0.13/2, 'g': 0.13/2, 'r': 0.25/2, 'i': 0.25/2, 'z': 0.25/2, 'y': 0.25/2}))
-    # higher dusty region
-    fps.append(combo_dust_fp(wfd_dust_weights={'u': 0.13*2, 'g': 0.13*2, 'r': 0.25*2, 'i': 0.25*2, 'z': 0.25*2, 'y': 0.25*2}))
-    # More NES
-    fps.append(combo_dust_fp(nes_weights={'u': 0, 'g': 0.4, 'r': 0.9, 'i': 0.9, 'z': 0.88, 'y': 0}))
-    # Less NES
-    fps.append(combo_dust_fp(nes_weights={'u': 0, 'g': 0.1, 'r': 0.23, 'i': 0.23, 'z': 0.2, 'y': 0}))
+    # 2 No north, bring in the WFD a bit. Old footprint is -62.5 to 3.6
+    fps.append(combo_dust_fp(north_weights={},
+                             wfd_north_dec=8., wfd_south_dec=-67.4))
+    # 3 No north, bring in the WFD a bit. Old footprint is -62.5 to 3.6, extend bridge south
+    fps.append(combo_dust_fp(north_weights={},
+                             wfd_north_dec=8., wfd_south_dec=-67.4,
+                             outer_bridge_l=240, outer_bridge_width=20., outer_bridge_alt=13.))
+
+    # 4 No north, bring WFD all the way down
+    fps.append(combo_dust_fp(north_weights={},
+                             wfd_north_dec=3.6, wfd_south_dec=-62.5,
+                             outer_bridge_l=255, outer_bridge_width=33., outer_bridge_alt=30))
+
+    # 5 and with bigger bridge
+    fps.append(combo_dust_fp(north_weights={},
+                             wfd_north_dec=8., wfd_south_dec=-67.4,
+                             outer_bridge_l=240, outer_bridge_width=20., outer_bridge_alt=13.))
+
+    # 6 
+    fps.append(combo_dust_fp(north_weights={},
+                             wfd_north_dec=8., wfd_south_dec=-67.4,
+                             outer_bridge_l=260, outer_bridge_width=20., outer_bridge_alt=13.))
 
     return fps[fpid]
 
@@ -500,8 +501,8 @@ if __name__ == "__main__":
     parser.add_argument("--maxDither", type=float, default=0.7, help="Dither size for DDFs (deg)")
     parser.add_argument("--nslice", type=int, default=2)
     parser.add_argument("--scale", type=float, default=0.8)
-    parser.add_argument("--nexp", type=int, default=1)
-
+    parser.add_argument("--nexp", type=int, default=2)
+    parser.add_argument("--fpid", type=int, default=0)
 
     args = parser.parse_args()
     survey_length = args.survey_length  # Days
@@ -530,9 +531,8 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'footprint_tune_'
-    if nexp != 1:
-        fileroot += 'nexp%i_' % nexp
+    fileroot = 'footprint_%i_' % fpid
+
     file_end = 'v1.6.1_'
 
     # Mark position of the sun at the start of the survey. Usefull for rolling cadence.
