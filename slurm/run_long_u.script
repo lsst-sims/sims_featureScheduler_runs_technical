@@ -1,1 +1,1 @@
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/long_u/long_u.py --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/long_u/
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/u_long.py --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/
