@@ -348,44 +348,20 @@ def make_rolling_footprints(mjd_start=59853.5, sun_RA_start=3.27717639, nslice=2
     non_wfd_indx = np.where(hp_footprints['r'] != 1)[0]
     wfd[wfd_indx] = 1
 
-    if nslice == 2:
-        for key in hp_footprints:
-            temp = hp_footprints[key] + 0
-            temp[wfd_indx] = 0
-            fp_non_wfd.set_footprint(key, temp)
+    roll = np.zeros(nslice)
+    roll[-1] = 1
+    for key in hp_footprints:
+        temp = hp_footprints[key] + 0
+        temp[wfd_indx] = 0
+        fp_non_wfd.set_footprint(key, temp)
 
-            for i in range(2):
-                temp = hp_footprints[key] + 0
-                temp[non_wfd_indx] = 0
-                indx = wfd_indx[split_wfd_indices[i]:split_wfd_indices[i+1]]
-                temp[indx] = 0
-                indx = wfd_indx[split_wfd_indices[i+2]:split_wfd_indices[i+3]]
-                temp[indx] = 0
-                rolling_footprints[i].set_footprint(key, temp)
-    elif nslice == 3:
-        roll = [0, 0, 1]
-        for key in hp_footprints:
+        for i in range(nslice):
             temp = hp_footprints[key] + 0
-            temp[wfd_indx] = 0
-            fp_non_wfd.set_footprint(key, temp)
-
-            for i in range(nslice):
-                temp = hp_footprints[key] * 0
-                temp[non_wfd_indx] = 0
-                # OK, this should be collapsed into a loop obviously
-                indx = wfd_indx[split_wfd_indices[0]:split_wfd_indices[1]]
-                temp[indx] = roll[i % 3]
-                indx = wfd_indx[split_wfd_indices[1]:split_wfd_indices[2]]
-                temp[indx] = roll[(i+1) % 3]
-                indx = wfd_indx[split_wfd_indices[2]:split_wfd_indices[3]]
-                temp[indx] = roll[(i+2) % 3]
-                indx = wfd_indx[split_wfd_indices[3]:split_wfd_indices[4]]
-                temp[indx] = roll[i % 3]
-                indx = wfd_indx[split_wfd_indices[4]:split_wfd_indices[5]]
-                temp[indx] = roll[(i+1) % 3]
-                indx = wfd_indx[split_wfd_indices[5]:split_wfd_indices[6]]
-                temp[indx] = roll[(i+2) % 3]
-                rolling_footprints[i].set_footprint(key, temp)
+            temp[non_wfd_indx] = 0
+            for j in range(nslice*2):
+                indx = wfd_indx[split_wfd_indices[j]:split_wfd_indices[j+1]]
+                temp[indx] = temp[indx] * roll[(i+j) % nslice]
+            rolling_footprints[i].set_footprint(key, temp)
 
     result = Footprints([fp_non_wfd] + rolling_footprints)
     return result
