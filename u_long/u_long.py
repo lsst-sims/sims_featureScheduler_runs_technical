@@ -338,6 +338,7 @@ if __name__ == "__main__":
     parser.add_argument("--moon_illum_limit", type=float, default=40., help="illumination limit to remove u-band")
     parser.add_argument("--nexp", type=int, default=1)
     parser.add_argument("--scale_down", dest='scale_down', action='store_true')
+    parser.add_argument("--u_expt", type=float, default=60.)
     parser.set_defaults(scale_down=False)
 
     args = parser.parse_args()
@@ -348,6 +349,7 @@ if __name__ == "__main__":
     illum_limit = args.moon_illum_limit
     nexp = args.nexp
     scale_down = args.scale_down
+    u_expt = args.u_expt
 
     nside = 32
     per_night = True  # Dither DDF per night
@@ -366,7 +368,7 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'u_long_'
+    fileroot = 'u_long_%i_' % u_expt
     file_end = 'v1.6.1_'
 
     footprints_hp = u_double_footprint(nside=nside)
@@ -383,7 +385,7 @@ if __name__ == "__main__":
     ddfs = generate_dd_surveys(nside=nside, nexp=nexp, detailers=details)
 
     greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints)
-    blobs = generate_blobs(nside, nexp=nexp, footprints=footprints)
+    blobs = generate_blobs(nside, nexp=nexp, footprints=footprints, u_exptime=u_expt)
     surveys = [ddfs, blobs, greedy]
     run_sched(surveys, survey_length=survey_length, verbose=verbose,
               fileroot=os.path.join(outDir, fileroot+file_end), extra_info=extra_info,

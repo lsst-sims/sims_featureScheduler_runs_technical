@@ -1,1 +1,2 @@
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/u_long.py --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/u_long.py --u_expt 50 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/
+python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/u_long.py --u_expt 60 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/
