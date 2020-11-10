@@ -1,4 +1,4 @@
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/u_long.py --u_expt 50 --nexp 1 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/u_long.py --u_expt 60 --nexp 1 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/u_long.py --u_expt 50 --nexp 2 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/
-python /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/u_long.py --u_expt 60 --nexp 2 --outDir /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/u_long/
+python /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long/u_long.py --u_expt 50 --nexp 1 --outDir /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long/
+python /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long/u_long.py --u_expt 60 --nexp 1 --outDir /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long/
+python /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long/u_long.py --u_expt 50 --nexp 2 --outDir /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long/
+python /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long/u_long.py --u_expt 60 --nexp 2 --outDir /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long/
