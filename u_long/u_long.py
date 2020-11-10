@@ -368,10 +368,10 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'u_long_%i_' % u_expt
+    fileroot = 'u_long_%i_nexp%i_' % (u_expt, nexp)
     file_end = 'v1.6.1_'
 
-    footprints_hp = u_double_footprint(nside=nside)
+    footprints_hp = standard_goals(nside=nside)
 
     observatory = Model_observatory(nside=nside)
     conditions = observatory.return_conditions()
