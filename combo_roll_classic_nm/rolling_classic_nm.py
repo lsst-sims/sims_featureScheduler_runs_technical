@@ -143,7 +143,7 @@ def gen_greedy_surveys(nside=32, footprints=None,
                                                 out_of_bounds_val=np.nan, nside=nside), footprint_weight))
         bfs.append((bf.Slewtime_basis_function(filtername=filtername, nside=nside), slewtime_weight))
         bfs.append((bf.Strict_filter_basis_function(filtername=filtername), stayfilter_weight))
-        bfs.append((bf.Map_modulo_basis_function(wfd_halves), roll_weight))
+        #bfs.append((bf.Map_modulo_basis_function(wfd_halves), roll_weight))
         # Masks, give these 0 weight
         bfs.append((bf.Zenith_shadow_mask_basis_function(nside=nside, shadow_minutes=shadow_minutes,
                                                          max_alt=max_alt), 0))
@@ -272,7 +272,7 @@ def generate_blobs(nside, nexp=1, footprints=None,
                                                          n_obs=n_obs_template, season=season,
                                                          season_start_hour=season_start_hour,
                                                          season_end_hour=season_end_hour), template_weight))
-        bfs.append((bf.Map_modulo_basis_function(wfd_halves), roll_weight))
+        #bfs.append((bf.Map_modulo_basis_function(wfd_halves), roll_weight))
         # Masks, give these 0 weight
         bfs.append((bf.Zenith_shadow_mask_basis_function(nside=nside, shadow_minutes=shadow_minutes, max_alt=max_alt,
                                                          penalty=np.nan, site='LSST'), 0.))
@@ -499,7 +499,7 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'rolling_classic_scale%.1f_nslice%i_' % (scale, nslice)
+    fileroot = 'rolling_classic_nm_scale%.1f_nslice%i_' % (scale, nslice)
     if nexp != 1:
         fileroot += 'nexp%i_' % nexp
     file_end = 'v1.6.1_'
