@@ -1,0 +1,4 @@
+python /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long_msnaps/u_long_msnaps.py --u_expt 30 --outDir /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long_msnaps/
+python /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long_msnaps/u_long_msnaps.py --u_expt 40 --outDir /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long_msnaps/
+python /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long_msnaps/u_long_msnaps.py --u_expt 50 --outDir /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long_msnaps/
+python /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long_msnaps/u_long_msnaps.py --u_expt 60 --outDir /gscratch/scrubbed/yoachim/sims_featureScheduler_runs_technical/u_long_msnaps/
