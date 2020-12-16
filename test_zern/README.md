@@ -31,3 +31,18 @@ Flushed 0 observations from queue for being stale
 Completed 55125 observations
 ran in 17 min = 0.3 hours
 Writing results to  baseline_nexp2_v1.7_0yrs.db
+
+
+-----------------------------------------
+
+Running on inga.astro.washington.edu, for full 10 years
+
+on master (old skybrightness_pre files)
+python baseline.py --verbose
+progress = 100.01%Skipped 0 observations
+Flushed 47 observations from queue for being stale
+Completed 2044491 observations
+ran in 470 min = 7.8 hours
+Writing results to  baseline_nexp2_v1.7_10yrs.db
+
+
