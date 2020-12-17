@@ -46,3 +46,10 @@ ran in 470 min = 7.8 hours
 Writing results to  baseline_nexp2_v1.7_10yrs.db
 
 
+on branch
+progress = 100.01%Skipped 0 observations
+Flushed 23 observations from queue for being stale
+Completed 2044663 observations
+ran in 574 min = 9.6 hours
+Writing results to  baseline_nexp2_v1.7_10yrs.db
+
