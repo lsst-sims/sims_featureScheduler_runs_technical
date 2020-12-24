@@ -95,8 +95,8 @@ def ddf_info(exptime=30., u_exptime=30., nexp=1):
 
 def read_times(filename='schedule_59002.txt', end_time=36.):
     end_time = end_time/24.  # to Days
-    names = ['mjd_start', 'label']
-    types = [float, '|U10']
+    names = ['mjd_start', 'why', 'night', 'label']
+    types = [float, '|U10', int, '|U10']
     data = np.genfromtxt(filename, dtype=list(zip(names, types)), skip_header=1)
 
     info, ha_dict = ddf_info()
@@ -106,7 +106,7 @@ def read_times(filename='schedule_59002.txt', end_time=36.):
     for name in orig_names:
         indx = np.where(data['label'] == name)
         for new_name in ddf_names:
-            if name.lower() in new_name.lower():
+            if name.lower() in new_name.lower().replace('_', ''):
                 data['label'][indx] = new_name
 
     order = np.argsort(data['mjd_start'])

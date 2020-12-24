@@ -13,6 +13,7 @@ import sys
 import subprocess
 import os
 import argparse
+from read_ddf import Scheduled_ddfs, read_times, ddf_info
 
 
 def gen_greedy_surveys(nside=32, nexp=2, exptime=30., filters=['r', 'i', 'z', 'y'],
@@ -296,7 +297,9 @@ if __name__ == "__main__":
     parser.add_argument("--nexp", type=int, default=2)
     parser.add_argument("--scale_down", dest='scale_down', action='store_true')
     parser.set_defaults(scale_down=False)
-    parser.add_arguemnt("--filenumber", type=int, default=0)
+    parser.add_argument("--filenumber", type=int, default=0)
+    parser.add_argument("--float_time", type=float, default=36.)
+
 
     args = parser.parse_args()
     survey_length = args.survey_length  # Days
@@ -307,6 +310,7 @@ if __name__ == "__main__":
     nexp = args.nexp
     scale_down = args.scale_down
     filenumber = args.filenumber
+    float_time = args.float_time
 
     files = ["presched_2day.txt", "presched_2day_bridge_deep.txt", "presched_3day.txt",
              "presched_2day_bridge.txt", "presched_2day_bridge_shallow.txt"]
@@ -346,16 +350,26 @@ if __name__ == "__main__":
         footprints.footprints[i, :] = footprints_hp[key]
 
     # Set up the DDF surveys to dither
-    # Set up the DDF surveys to dither
     dither_detailer = detailers.Dither_detailer(per_night=per_night, max_dither=max_dither)
     details = [detailers.Camera_rot_detailer(min_rot=-camera_ddf_rot_limit, max_rot=camera_ddf_rot_limit), dither_detailer]
     euclid_detailers = [detailers.Camera_rot_detailer(min_rot=-camera_ddf_rot_limit, max_rot=camera_ddf_rot_limit),
                         detailers.Euclid_dither_detailer()]
     ddf_dict, ha_dict = ddf_info()
     ddf_times = read_times(filename=ddf_file, end_time=float_time)
+    # let's map the names
+    name_dict = {'COSMOS_g': 'DD:COSMOS', 'Euclid_g': 'DD:EDFS', 'ECDFS_g': 'DD:ECDFS',
+                 'Elias_S1_g': 'DD:ELAISS1', 'XMM-LSS_g':'DD:XMM-LSS'}
+    for key in name_dict:
+        ddf_times['label'][np.where(ddf_times['label'] == key)] = name_dict[key]
 
-    ddfs = [Scheduled_ddfs(ddf_times, ddf_dict, ha_dict, detailers=details)]
+    ddfs = []
+    for ddf_name in ['DD:ELAISS1', 'DD:XMM-LSS', 'DD:ECDFS', 'DD:COSMOS']:
+        good = np.where(ddf_times['label'] == ddf_name)
+        ddfs.append(Scheduled_ddfs(ddf_times[good], ddf_dict, ha_dict, detailers=details))
 
+    for ddf_name in ['DD:EDFS']:
+        good = np.where(ddf_times['label'] == ddf_name)
+        ddfs.append(Scheduled_ddfs(ddf_times[good], ddf_dict, ha_dict, detailers=euclid_detailers))
 
     greedy = gen_greedy_surveys(nside, nexp=nexp, footprints=footprints)
     blobs = generate_blobs(nside, nexp=nexp, footprints=footprints)
