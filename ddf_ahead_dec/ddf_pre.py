@@ -354,7 +354,7 @@ if __name__ == "__main__":
     details = [detailers.Camera_rot_detailer(min_rot=-camera_ddf_rot_limit, max_rot=camera_ddf_rot_limit), dither_detailer]
     euclid_detailers = [detailers.Camera_rot_detailer(min_rot=-camera_ddf_rot_limit, max_rot=camera_ddf_rot_limit),
                         detailers.Euclid_dither_detailer()]
-    ddf_dict, ha_dict = ddf_info()
+    ddf_dict, ha_dict = ddf_info(nexp=nexp)
     ddf_times = read_times(filename=ddf_file, end_time=float_time)
     # let's map the names
     name_dict = {'COSMOS_g': 'DD:COSMOS', 'Euclid_g': 'DD:EDFS', 'ECDFS_g': 'DD:ECDFS',

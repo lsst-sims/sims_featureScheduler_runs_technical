@@ -6,7 +6,7 @@ from lsst.sims.utils import _approx_RaDec2AltAz
 
 
 def basic_sequence(ra, dec, survey_name='', sequence='urgizy', nvis=[8, 20, 10, 20, 26, 20],
-                   exptime=30., u_exptime=30., nexp=1):
+                   exptime=30., u_exptime=30., nexp=2):
     """Generate the list of observations that should happen in a ddf sequence
     """
     observations = []
@@ -26,7 +26,7 @@ def basic_sequence(ra, dec, survey_name='', sequence='urgizy', nvis=[8, 20, 10, 
     return np.array(observations)
 
 
-def ddf_info(exptime=30., u_exptime=30., nexp=1):
+def ddf_info(exptime=30., u_exptime=30., nexp=2):
     """
     Basic info for each DDF
     """
