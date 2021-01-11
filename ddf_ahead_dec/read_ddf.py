@@ -125,8 +125,17 @@ def read_times(filename='schedule_59002.txt', end_time=36.):
 
 
 class Scheduled_ddfs(BaseSurvey):
+    """
+    Parameters
+    ----------
+    flush_time : float (40)
+        The time to allow to pass before flushing observation from queue (minutes)
+    read_time : float (2.)
+        The estimated read time of the camera (seconds)
+    """
     def __init__(self, times_array, sequence_dict, ha_dict, basis_functions=[],
-                 detailers=[], ignore_obs=None, reward_value=100, flush_time=40.):
+                 detailers=[], ignore_obs=None, reward_value=100, flush_time=40.,
+                 read_time=2.):
 
         super(Scheduled_ddfs, self).__init__(basis_functions=basis_functions,
                                              detailers=detailers, ignore_obs=ignore_obs)
@@ -137,6 +146,7 @@ class Scheduled_ddfs(BaseSurvey):
         self.observation_complete = np.zeros(self.times_array.size, dtype=bool)
         self.reward_value = reward_value
         self.ha_dict = ha_dict
+        self.read_time = read_time/3600./24.
 
     def _check_feasibility(self, conditions):
         result = False
@@ -183,6 +193,10 @@ class Scheduled_ddfs(BaseSurvey):
             ind1 = np.where(result['filter'] == conditions.current_filter)[0]
             ind2 = np.where(result['filter'] != conditions.current_filter)[0]
             result = result[ind1.tolist() + (ind2.tolist())]
+
+            # Set the flush_by
+            running_time = np.cumsum(result['exptime'])/3600./24. + np.cumsum(np.ones(np.size(result))*self.read_time*result['nexp'])
+            result['flush_by_mjd'] = conditions.mjd + self.flush_time + running_time
 
             # convert to list of array. Arglebargle, don't understand why I need a reshape there
             final_result = [row.reshape(1,) for row in result]
