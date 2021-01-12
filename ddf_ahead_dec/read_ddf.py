@@ -6,21 +6,24 @@ from lsst.sims.utils import _approx_RaDec2AltAz
 
 
 def basic_sequence(ra, dec, survey_name='', sequence='urgizy', nvis=[8, 20, 10, 20, 26, 20],
-                   exptime=30., u_exptime=30., nexp=2):
+                   exptime=30., u_exptime=30., nexp=2, u_nexp=2):
     """Generate the list of observations that should happen in a ddf sequence
     """
     observations = []
     for num, filtername in zip(nvis, sequence):
+        # XXX--in theory, we could use decimal nvis and do a random number draw here, so
+        # nvis=2.5 means 2 half the time and 3 half the time.
         for j in range(num):
             obs = empty_observation()
             obs['filter'] = filtername
             if filtername == 'u':
                 obs['exptime'] = u_exptime
+                obs['nexp'] = u_nexp
             else:
                 obs['exptime'] = exptime
+                obs['nexp'] = nexp
             obs['RA'] = np.radians(ra)
             obs['dec'] = np.radians(dec)
-            obs['nexp'] = nexp
             obs['note'] = survey_name
             observations.append(obs)
     return np.array(observations)
