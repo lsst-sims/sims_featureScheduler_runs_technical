@@ -35,4 +35,4 @@ with open('ss_script.sh', 'w') as f:
             s3 = ('run_moving_fractions.py --workDir %s_%s ' % (run, pop) +
                   '--metadata %s ' % metadatas[pop] +
                   '--hMark %i' % hmarks[pop])
-            print(s1[0] + ' ; ' + s2[0] + ' ; ' + s3[0], file=f)
+            print(s1 + ' ; ' + s2 + ' ; ' + s3, file=f)
