@@ -343,7 +343,7 @@ if __name__ == "__main__":
 
     extra_info['file executed'] = os.path.realpath(__file__)
 
-    fileroot = 'pause_sim'
+    fileroot = 'pause_sim_'
     file_end = 'v1.7_'
 
     if scale_down:
