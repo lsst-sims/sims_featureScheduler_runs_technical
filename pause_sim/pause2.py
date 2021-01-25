@@ -3,7 +3,8 @@ import matplotlib.pylab as plt
 import healpy as hp
 from lsst.sims.featureScheduler.modelObservatory import Model_observatory
 from lsst.sims.featureScheduler.schedulers import Core_scheduler, simple_filter_sched
-from lsst.sims.featureScheduler.utils import standard_goals, generate_goal_map, Footprint, run_info_table, schema_converter
+from lsst.sims.featureScheduler.utils import (standard_goals, generate_goal_map, Footprint,
+                                              run_info_table, schema_converter, Step_line)
 import lsst.sims.featureScheduler.basis_functions as bf
 from lsst.sims.featureScheduler.surveys import (Greedy_survey, generate_dd_surveys,
                                                 Blob_survey)
@@ -301,6 +302,8 @@ def run_sched(surveys, survey_length=None, nside=32, fileroot='baseline_', verbo
 
 class Step_line_combo(Base_pixel_evolution):
     """
+    Use two Step_line objects to be able to account for a break.
+
     Parameters
     ----------
     period : float (365.25)
@@ -315,28 +318,20 @@ class Step_line_combo(Base_pixel_evolution):
         self.t_start = t_start
         self.t_break = np.array([t_break])
         self.t_start2 = np.array([t_start2])
-
-    def _calc_phases(self, t):
-        n_periods = np.floor(t/(self.period))
-        result = n_periods*self.rise
-        tphased = t % self.period
-        step_area = np.where(tphased >= self.period/2.)[0]
-        result[step_area] += (tphased[step_area] - self.period/2)*self.rise/(0.5*self.period)
-        result[np.where(t < 0)] = 0
-        return result
+        self.step_line1 = Step_line(rise=rise, period=period, t_start=t_start)
+        self.phase_add = t_break/period
 
     def __call__(self, mjd_in, phase):
-        t = mjd_in+phase - self.t_start
+        """mjd_in actually the total time elapsed in days
+        """
 
-        between = np.where((t > self.t_break) & (t <= self.t_start2))[0]
-        over = np.where(t > self.t_start2)[0]
-        result = self._calc_phases(t)
-        break_level = self._calc_phases(self.t_break)
-        rise = self._calc_phases(self.t_start2) - break_level
-        result[between] = break_level
-
-        if np.size(over) > 0:
-            result[over] -= rise
+        if mjd_in < self.t_break:
+            result = self.step_line1(mjd_in, phase)
+        else:
+            result = self.step_line1(self.t_break, phase)
+            if mjd_in > self.t_start2:
+                missed = self.step_line1(self.t_start2, phase) - result
+                result = self.step_line1(mjd_in, phase) - missed
 
         return result
 
@@ -396,7 +391,7 @@ if __name__ == "__main__":
     observatory = Model_observatory(nside=nside)
     conditions = observatory.return_conditions()
     t_start = conditions.mjd
-    step_func = Step_line_combo(t_start=t_start, t_break=sl1+t_start, t_start2=t_start+pause_length)
+    step_func = Step_line_combo(t_start=0., t_break=sl1, t_start2=sl1+pause_length)
     footprints = Footprint(conditions.mjd_start, sun_RA_start=conditions.sun_RA_start, nside=nside, step_func=step_func)
     for i, key in enumerate(footprints_hp):
         footprints.footprints[i, :] = footprints_hp[key]
