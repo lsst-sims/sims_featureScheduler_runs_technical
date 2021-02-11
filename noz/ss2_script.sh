@@ -1,0 +1,2 @@
+run_moving_calc.py --characterization inner --obsFile noz_v1.7_10yrs__granvik_5k_obs.txt --opsimDb noz_v1.7_10yrs.db --orbitFile /gscratch/astro/lynnej/orbits/granvik_5k/granvik_5k.txt --outDir noz_v1.7_10yrs_granvik_5k --opsimRun noz_v1.7_10yrs --hMin 16.00 --hMax 22.20 --hStep 0.20 --metadata NEO 
+run_moving_calc.py --characterization inner --obsFile noz_v1.7_10yrs__l7_5k_obs.txt --opsimDb noz_v1.7_10yrs.db --orbitFile /gscratch/astro/lynnej/orbits/l7_5k/l7_5k.txt --outDir noz_v1.7_10yrs_l7_5k --opsimRun noz_v1.7_10yrs --hMin 4.00 --hMax 12.00 --hStep 0.20 --metadata TNO 
