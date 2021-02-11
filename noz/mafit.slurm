@@ -2,7 +2,7 @@
 
 ## Job Name
 
-#SBATCH --job-name=maf_sso
+#SBATCH --job-name=maf_noz
 
 ## Allocation Definition
 
@@ -14,12 +14,12 @@
 
 ## Nodes
 
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=20   
 
 ## Walltime (hours:min:sec) Do not specify a walltime substantially more than your job needs.
 
-#SBATCH --time=96:00:00
+#SBATCH --time=24:00:00
 
 ## Memory per node. It is important to specify the memory since the default memory is very small.
 
@@ -33,7 +33,7 @@
 
 ## Specify the working directory for this job
 
-#SBATCH --chdir=/gscratch/scrubbed/yoachim/sims_featureScheduler_runs1.7/maf
+#SBATCH --chdir=/usr/lusers/yoachim/runst/noz
 
 ##turn on e-mail notification
 
@@ -54,11 +54,12 @@ setup sims_maf_contrib -t $USER -t sims_w_2020_02
 setup sims_movingObjects -t $USER
 
 
-cd /gscratch/scrubbed/yoachim/sims_featureScheduler_runs1.7/maf
+cd /usr/lusers/yoachim/runst/noz
 
 ## run all the baseline commands in parallel
 module load parallel-20170722
 ## only need to do 5 at a time, since there are only that many in the list
-cat ss_script.sh | parallel -j 40
-cat ss2_script.sh | parallel -j 40
-cat ss3_script.sh | parallel -j 40
+cat mafs.sh | parallel -j 20
+cat ss_script.sh | parallel -j 20
+cat ss2_script.sh | parallel -j 20
+cat ss3_script.sh | parallel -j 20
