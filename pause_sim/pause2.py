@@ -333,6 +333,9 @@ class Step_line_combo(Base_pixel_evolution):
                 missed = self.step_line1(self.t_start2, phase) - result
                 result = self.step_line1(mjd_in, phase) - missed
 
+        #if np.max(mjd_in) > 0:
+        #    import pdb ; pdb.set_trace()
+
         return result
 
 

@@ -291,6 +291,16 @@ def run_sched(surveys, survey_length=None, nside=32, fileroot='baseline_', verbo
 
         observations.append(observations1)
 
+    # Now for the last set of observations
+    survey_length = survey_lengths[-1]
+    observatory, scheduler, observations1 = sim_runner(observatory, scheduler,
+                                                       survey_length=survey_length,
+                                                       filename=None,
+                                                       delete_past=True, n_visit_limit=n_visit_limit,
+                                                       verbose=verbose, extra_info=extra_info,
+                                                       filter_scheduler=filter_sched)
+    observations.append(observations1)
+
     observations = np.concatenate(observations)
     info = run_info_table(observatory, extra_info=extra_info)
     converter = schema_converter()
@@ -323,15 +333,16 @@ class Step_line_combo(Base_pixel_evolution):
         """
 
         # If we are in a break, t=t_break
-        indx1 = np.where(self.t_breaks > mjd_in)[0]
-        indx2 = np.where(self.t_resumes > mjd_in)[0]
-        if np.size(indx1 > indx2):
+        indx1 = np.where(self.t_breaks < mjd_in)[0]
+        indx2 = np.where(self.t_resumes < mjd_in)[0]
+        if np.size(indx1) > np.size(indx2):
             mjd_use = self.t_breaks[np.max(indx1)]
         else:
             mjd_use = mjd_in
 
         result = self.step_line1(mjd_use, phase)
-
+        #if np.max(mjd_use) > 0:
+        #    import pdb ; pdb.set_trace()
         # Now to subtract off any paused time
         missed = 0
         for indx in indx2:
@@ -394,7 +405,8 @@ if __name__ == "__main__":
     t_start = conditions.mjd
 
     # Let's do
-    survey_lengths = np.array([365, 365, 365, 2557.])
+    #survey_lengths = np.array([365, 365, 365, 2557.])
+    survey_lengths = np.array([10, 10, 10, 10.])
     pause_lengths = np.array([61., 61., 61.])
 
     all_times = np.zeros(6)
