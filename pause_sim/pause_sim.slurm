@@ -57,5 +57,5 @@ cd /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/pause_
 ## run all the baseline commands in parallel
 module load parallel-20170722
 ## only need to do 5 at a time, since there are only that many in the list
-cat run_pausesim.script | parallel -j 20
+cat run_pausesim3.script | parallel -j 20
 

@@ -304,6 +304,7 @@ def run_sched(surveys, survey_length=None, nside=32, fileroot='baseline_', verbo
     observations = np.concatenate(observations)
     info = run_info_table(observatory, extra_info=extra_info)
     converter = schema_converter()
+    print("Writing combined results to %s" % filename)
     converter.obs2opsim(observations, filename=filename, info=info, delete_past=delete_past)
 
 
@@ -405,8 +406,8 @@ if __name__ == "__main__":
     t_start = conditions.mjd
 
     # Let's do
-    survey_lengths = np.array([365, 365, 365, 2557.])
-    #survey_lengths = np.array([10, 10, 10, 10.])
+    #survey_lengths = np.array([365, 365, 365, 2557.])
+    survey_lengths = np.array([10, 10, 10, 10.])
     pause_lengths = np.array([61., 61., 61.])
 
     all_times = np.zeros(6)
