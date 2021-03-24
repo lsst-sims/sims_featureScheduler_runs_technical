@@ -1,4 +1,4 @@
-python pause.py --survey_length 10
-python pause2.py --sl1 10 --sl2 10 --pause_length 183 
-python pause2.py --sl1 10 --sl2 10 --pause_length 91 
+python pause.py 
+python pause2.py --sl1 730 --sl2 2922 --pause_length 183
+python pause2.py --sl1 730 --sl2 2922 --pause_length 91
 python pause3.py

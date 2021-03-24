@@ -405,8 +405,8 @@ if __name__ == "__main__":
     t_start = conditions.mjd
 
     # Let's do
-    #survey_lengths = np.array([365, 365, 365, 2557.])
-    survey_lengths = np.array([10, 10, 10, 10.])
+    survey_lengths = np.array([365, 365, 365, 2557.])
+    #survey_lengths = np.array([10, 10, 10, 10.])
     pause_lengths = np.array([61., 61., 61.])
 
     all_times = np.zeros(6)
