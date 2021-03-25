@@ -1,5 +1,5 @@
 import matplotlib
-matplotlib.use("TkAgg")
+matplotlib.use("Agg")
 import os
 import glob
 import shutil
