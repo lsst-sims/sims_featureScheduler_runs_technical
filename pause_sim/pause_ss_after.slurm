@@ -61,6 +61,6 @@ cd /gscratch/astro/yoachim/git_repos/sims_featureScheduler_runs_technical/pause_
 ## run all the baseline commands in parallel
 module load parallel-20170722
 
-cat ss_aftermake.script | parallel -j 4
+cat ss_aftermake.script | parallel -j 20
 #cat ss_script.sh | parallel -j 20
 
