@@ -8,3 +8,5 @@ python ../glance_dir.py --db pause3_v1.7_10yrs.db
 python ../scimaf_dir.py --db pause3_v1.7_10yrs.db
 python ../glance_dir.py --db baseline_nexp2_v1.7_10yrs.db
 python ../scimaf_dir.py --db baseline_nexp2_v1.7_10yrs.db
+python ../glance_dir.py --db baseline_nexp2_v1.7.1_10yrs.db
+python ../scimaf_dir.py --db baseline_nexp2_v1.7.1_10yrs.db
